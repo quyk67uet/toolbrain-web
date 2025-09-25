@@ -1,0 +1,59 @@
+'use client';
+
+import { ReactNode } from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+interface CodeBlockProps {
+  children: string;
+  language?: string;
+  filename?: string;
+  className?: string;
+}
+
+export default function CodeBlock({ 
+  children, 
+  language = 'python', 
+  filename,
+  className = '' 
+}: CodeBlockProps) {
+  return (
+    <div className={`relative rounded-lg overflow-hidden bg-[#161B22] border border-gray-700 ${className}`}>
+      {filename && (
+        <div className="px-4 py-2 bg-[#0D1117] border-b border-gray-700 text-sm text-gray-400">
+          {filename}
+        </div>
+      )}
+      <div className="relative">
+        <SyntaxHighlighter
+          language={language}
+          style={oneDark}
+          customStyle={{
+            background: '#161B22',
+            padding: '1.5rem',
+            margin: 0,
+            fontSize: '0.875rem',
+            lineHeight: '1.5',
+          }}
+          showLineNumbers={false}
+          wrapLines
+          wrapLongLines
+        >
+          {children.trim()}
+        </SyntaxHighlighter>
+        
+        {/* Copy button */}
+        <button
+          onClick={() => navigator.clipboard.writeText(children.trim())}
+          className="absolute top-3 right-3 p-2 bg-[#0D1117] hover:bg-[#21262D] rounded-md border border-gray-600 transition-colors"
+          title="Copy to clipboard"
+        >
+          <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+            <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+}
