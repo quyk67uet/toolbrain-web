@@ -17,28 +17,33 @@ const navigation: NavItem[] = [
     children: [
       { name: 'Introduction', href: '/get-started/introduction' },
       { name: 'Installation', href: '/get-started/installation' },
+      { name: 'Quickstart: Your First Trained Agent', href: '/get-started/quickstart' },
     ]
   },
   {
     name: 'TUTORIALS',
     children: [
-      { name: 'Quickstart Tutorial', href: '/tutorials/quickstart' },
-      { name: 'Hyperparameter Optimization', href: '/tutorials/hyperparameter-optimization' },
+      { name: 'Solving HPO with RL', href: '/tutorials/hpo-with-rl' },
+      { name: 'Training an Email Search Agent', href: '/tutorials/email-search-agent' },
     ]
   },
   {
     name: 'KEY FEATURES',
     children: [
-      { name: 'Agent Training', href: '/key-features/agent-training' },
-      { name: 'Reward System', href: '/key-features/reward-system' },
-      { name: 'Model Selection', href: '/key-features/model-selection' },
+      { name: 'Unified API & Architecture', href: '/key-features/unified-api' },
+      { name: 'Flexible Rewards', href: '/key-features/flexible-rewards' },
+      { name: 'Multiple Learning Algorithms', href: '/key-features/multiple-algorithms' },
+      { name: 'Knowledge Distillation', href: '/key-features/knowledge-distillation' },
+      { name: 'Intelligent Tool Retrieval', href: '/key-features/intelligent-tool-retrieval' },
+      { name: 'Zero-Learn Task Generation', href: '/key-features/zero-learn' },
+      { name: 'Efficient Training', href: '/key-features/efficient-training' },
     ]
   },
   {
     name: 'CONCEPTUAL GUIDES',
     children: [
-      { name: 'Core Concepts', href: '/conceptual-guides/core-concepts' },
-      { name: 'Advanced Features', href: '/conceptual-guides/advanced-features' },
+      { name: 'The \'Coach-Athlete\' Paradigm', href: '/conceptual-guides/coach-athlete-paradigm' },
+      { name: 'The Execution Trace', href: '/conceptual-guides/execution-trace' },
     ]
   },
   {
@@ -56,7 +61,7 @@ interface SidebarProps {
 export default function Sidebar({ className = '' }: SidebarProps) {
   const pathname = usePathname();
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['GET STARTED', 'TUTORIALS', 'KEY FEATURES (IN-DEPTH GUIDES)', 'CONCEPTUAL GUIDES', 'RESOURCES'])
+    new Set(['GET STARTED', 'TUTORIALS', 'KEY FEATURES', 'CONCEPTUAL GUIDES', 'RESOURCES'])
   );
 
   const toggleSection = (sectionName: string) => {
