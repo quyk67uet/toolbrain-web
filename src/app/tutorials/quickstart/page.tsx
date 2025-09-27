@@ -423,7 +423,7 @@ print("- Learn about advanced reward shaping techniques")`
           </div>
           
           <div className="bg-[#161B22] border border-[#30363D] rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-[#E6EDF3] mb-3">🚀 What's Next?</h3>
+            <h3 className="text-lg font-semibold text-[#E6EDF3] mb-3">🚀 What&apos;s Next?</h3>
             <ul className="space-y-2 text-gray-400">
               <li>• <a href="/tutorials/hyperparameter-optimization" className="text-[#58A6FF] hover:underline">Hyperparameter Optimization Tutorial</a></li>
               <li>• <a href="/key-features/agent-training" className="text-[#58A6FF] hover:underline">Advanced Agent Training</a></li>
@@ -439,7 +439,7 @@ print("- Learn about advanced reward shaping techniques")`
             <div className="text-4xl mb-4">🎉</div>
             <h2 className="text-2xl font-bold text-[#E6EDF3] mb-4">Congratulations!</h2>
             <p className="text-gray-300 mb-6">
-              You've successfully completed the ToolBrain quickstart tutorial! 
+              You&apos;ve successfully completed the ToolBrain quickstart tutorial! 
               You now have a trained intelligent agent and understand the core concepts.
             </p>
             

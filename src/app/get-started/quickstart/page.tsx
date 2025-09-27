@@ -19,7 +19,7 @@ export default function Quickstart() {
           <div className="bg-blue-900/20 border border-blue-600 rounded-lg p-6 mb-8">
             <h2 className="text-2xl font-semibold text-blue-400 mb-4">🎯 Goal</h2>
             <p className="text-blue-200">
-              In this quickstart, we'll train an intelligent agent to master finance APIs through reinforcement learning. 
+              In this quickstart, we&apos;ll train an intelligent agent to master finance APIs through reinforcement learning. 
               The agent will learn to use tools effectively by practicing on generated examples and receiving feedback 
               from a teacher model.
             </p>
@@ -31,8 +31,8 @@ export default function Quickstart() {
           <h2 className="text-3xl font-semibold text-white mb-6">Step 1: Define a Tool & Reward Function</h2>
           <div className="bg-gray-800 rounded-lg p-6 mb-6">
             <p className="text-gray-300 mb-4">
-              First, let's set up a simple tool and reward function. For this example, we'll use finance APIs and 
-              define how to judge the agent's performance.
+              First, let&apos;s set up a simple tool and reward function. For this example, we&apos;ll use finance APIs and 
+              define how to judge the agent&apos;s performance.
             </p>
             
             <div className="mb-6">
@@ -66,7 +66,7 @@ reward_func = llm_judge_or_user_defined  # Uses LLM or custom logic to judge qua
           <h2 className="text-3xl font-semibold text-white mb-6">Step 2: The 7-Line ToolBrain Workflow</h2>
           <div className="bg-gray-800 rounded-lg p-6 mb-6">
             <p className="text-gray-300 mb-6">
-              Here's the complete ToolBrain workflow in just 7 lines of code. Each step builds upon the previous one 
+              Here&apos;s the complete ToolBrain workflow in just 7 lines of code. Each step builds upon the previous one 
               to create a fully trained agent.
             </p>
 
@@ -202,8 +202,8 @@ brain.train(dataset=training_tasks)`}
           <h2 className="text-3xl font-semibold text-white mb-6">Step 4: The Result</h2>
           <div className="bg-gray-800 rounded-lg p-6 mb-6">
             <p className="text-gray-300 mb-4">
-              After training completes, you'll have an intelligent agent that has learned to effectively use finance APIs. 
-              Here's what you can expect:
+              After training completes, you&apos;ll have an intelligent agent that has learned to effectively use finance APIs. 
+              Here&apos;s what you can expect:
             </p>
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -245,7 +245,7 @@ print(f"Execution trace: {result.trace}")`}
             <div className="bg-purple-900/20 border border-purple-600 rounded-lg p-4">
               <h4 className="font-semibold text-purple-400 mb-2">🎉 Congratulations!</h4>
               <p className="text-purple-200 text-sm">
-                You've just trained your first intelligent agent with ToolBrain! The agent can now autonomously 
+                You&apos;ve just trained your first intelligent agent with ToolBrain! The agent can now autonomously 
                 use finance APIs to solve complex tasks. From here, you can explore advanced features like 
                 multi-agent systems, custom reward functions, and distributed training.
               </p>
@@ -258,7 +258,7 @@ print(f"Execution trace: {result.trace}")`}
           <div className="bg-gray-800 rounded-lg p-6 text-center">
             <h2 className="text-2xl font-bold text-white mb-4">Ready for More?</h2>
             <p className="text-gray-300 mb-6">
-              Now that you've seen the power of ToolBrain, explore advanced tutorials and features.
+              Now that you&apos;ve seen the power of ToolBrain, explore advanced tutorials and features.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

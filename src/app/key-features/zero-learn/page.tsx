@@ -31,7 +31,7 @@ export default function ZeroLearnTaskGeneration() {
                   <li>• <strong>Time consuming:</strong> Weeks or months to gather sufficient data</li>
                   <li>• <strong>Expensive:</strong> High cost for domain experts and annotation</li>
                   <li>• <strong>Limited diversity:</strong> Human bias leads to narrow example distribution</li>
-                  <li>• <strong>Static datasets:</strong> Can't adapt to new domains or requirements</li>
+                  <li>• <strong>Static datasets:</strong> Can&apos;t adapt to new domains or requirements</li>
                   <li>• <strong>Quality inconsistency:</strong> Varying quality across different annotators</li>
                 </ul>
               </div>
@@ -56,7 +56,7 @@ export default function ZeroLearnTaskGeneration() {
             </div>
 
             <div className="bg-green-900/20 border border-green-600 rounded-lg p-4">
-              <h3 className="text-xl font-semibold text-green-400 mb-3">✅ ToolBrain's Zero-Learn Solution</h3>
+              <h3 className="text-xl font-semibold text-green-400 mb-3">✅ ToolBrain&apos;s Zero-Learn Solution</h3>
               <p className="text-green-200 text-sm mb-3">
                 Generate unlimited, diverse, high-quality training examples automatically from just a task description:
               </p>
@@ -76,7 +76,7 @@ export default function ZeroLearnTaskGeneration() {
           <h2 className="text-3xl font-semibold text-white mb-6">The "How": brain.generate_training_examples()</h2>
           <div className="bg-gray-800 rounded-lg p-6 mb-6">
             <p className="text-gray-300 mb-4">
-              The <code className="bg-gray-700 px-2 py-1 rounded">brain.generate_training_examples()</code> method is ToolBrain's 
+              The <code className="bg-gray-700 px-2 py-1 rounded">brain.generate_training_examples()</code> method is ToolBrain&apos;s 
               powerful automatic training data generation system. Here's the complete example from 
               <code className="bg-gray-700 px-2 py-1 rounded">examples/04_generate_training_examples.py</code>:
             </p>
@@ -648,15 +648,15 @@ print(f"Expert approval rate: {quality_report.expert_approval_rate:.3f}")`}
               </div>
               
               <div>
-                <h3 className="text-lg font-semibold text-red-400 mb-3">❌ Don'ts</h3>
+                <h3 className="text-lg font-semibold text-red-400 mb-3">❌ Don&apos;ts</h3>
                 <ul className="text-red-200 text-sm space-y-2">
-                  <li>• Don't use vague or overly broad task descriptions</li>
-                  <li>• Don't generate only easy or only hard examples</li>
-                  <li>• Don't skip quality validation steps</li>
-                  <li>• Don't ignore domain-specific constraints</li>
-                  <li>• Don't assume all generated examples are perfect</li>
-                  <li>• Don't neglect diversity in generated scenarios</li>
-                  <li>• Don't forget to include realistic error conditions</li>
+                  <li>• Don&apos;t use vague or overly broad task descriptions</li>
+                  <li>• Don&apos;t generate only easy or only hard examples</li>
+                  <li>• Don&apos;t skip quality validation steps</li>
+                  <li>• Don&apos;t ignore domain-specific constraints</li>
+                  <li>• Don&apos;t assume all generated examples are perfect</li>
+                  <li>• Don&apos;t neglect diversity in generated scenarios</li>
+                  <li>• Don&apos;t forget to include realistic error conditions</li>
                 </ul>
               </div>
             </div>

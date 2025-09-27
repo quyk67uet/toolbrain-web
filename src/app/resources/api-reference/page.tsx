@@ -60,7 +60,7 @@ export default function APIReference() {
     
     def evaluate(self, agent: Agent, episodes: int = 100) -> EvaluationResults:
         """
-        Evaluate an agent's performance.
+        Evaluate an agent&apos;s performance.
         
         Args:
             agent: The agent to evaluate

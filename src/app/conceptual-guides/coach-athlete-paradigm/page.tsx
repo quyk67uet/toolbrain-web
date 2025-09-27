@@ -9,9 +9,9 @@ export default function CoachAthleteParadigm() {
     <Layout>
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">Conceptual Guide: The 'Coach-Athlete' Paradigm</h1>
+          <h1 className="text-4xl font-bold text-white mb-4">Conceptual Guide: The &apos;Coach-Athlete&apos; Paradigm</h1>
           <p className="text-gray-300 text-lg">
-            Understanding ToolBrain's core architectural philosophy through the lens of sports coaching - 
+            Understanding ToolBrain&apos;s core architectural philosophy through the lens of sports coaching - 
             where separation of concerns enables both simplicity and extensibility.
           </p>
         </div>
@@ -40,7 +40,7 @@ export default function CoachAthleteParadigm() {
           <h2 className="text-3xl font-semibold text-white mb-6">The Problem: The Tangle of Agent & RL Logic</h2>
           <div className="bg-gray-800 rounded-lg p-6 mb-6">
             <p className="text-gray-300 mb-4">
-              In many existing systems, the agent's task-solving logic is tightly coupled with the reinforcement learning logic. 
+              In many existing systems, the agent&apos;s task-solving logic is tightly coupled with the reinforcement learning logic. 
               This creates several critical challenges that hinder both usability and extensibility:
             </p>
 
@@ -52,7 +52,7 @@ export default function CoachAthleteParadigm() {
                   <li>• <strong>Difficult to extend:</strong> Adding new agent types means rewriting RL components</li>
                   <li>• <strong>High barrier to entry:</strong> Developers need deep RL knowledge for basic tasks</li>
                   <li>• <strong>Code duplication:</strong> Similar RL logic scattered across different agent types</li>
-                  <li>• <strong>Testing complexity:</strong> Can't test agent logic independently from training</li>
+                  <li>• <strong>Testing complexity:</strong> Can&apos;t test agent logic independently from training</li>
                   <li>• <strong>Poor modularity:</strong> Everything depends on everything else</li>
                 </ul>
               </div>
@@ -110,7 +110,7 @@ class CodeAgentWithRL:
           <h2 className="text-3xl font-semibold text-white mb-6">The Solution: A Separation of Concerns</h2>
           <div className="bg-gray-800 rounded-lg p-6 mb-6">
             <p className="text-gray-300 mb-6">
-              ToolBrain introduces the <strong className="text-blue-400">'Coach-Athlete' paradigm</strong> as an elegant 
+              ToolBrain introduces the <strong className="text-blue-400">&apos;Coach-Athlete&apos; paradigm</strong> as an elegant 
               solution to this architectural challenge. This metaphor provides a clear mental model for understanding 
               how different responsibilities are separated:
             </p>
@@ -130,9 +130,9 @@ class CodeAgentWithRL:
                 <ul className="text-green-200 text-sm space-y-2 mb-4">
                   <li>• <strong>Domain expert:</strong> Knows how to call tools, solve problems, interact with APIs</li>
                   <li>• <strong>Task-focused:</strong> Only cares about executing the current task well</li>
-                  <li>• <strong>Unaware of training:</strong> Has no knowledge that it's being trained or evaluated</li>
+                  <li>• <strong>Unaware of training:</strong> Has no knowledge that it&apos;s being trained or evaluated</li>
                   <li>• <strong>Framework agnostic:</strong> Can be any agent from any framework (SmolAgents, LangGraph, etc.)</li>
-                  <li>• <strong>Stateless regarding RL:</strong> Doesn't maintain any training-related state</li>
+                  <li>• <strong>Stateless regarding RL:</strong> Doesn&apos;t maintain any training-related state</li>
                 </ul>
                 
                 <CodeBlock language="python">
@@ -164,11 +164,11 @@ result = athlete.run("Calculate the fibonacci sequence up to n=20")
                   <h3 className="text-2xl font-semibold text-blue-400">The Coach (Brain)</h3>
                 </div>
                 <p className="text-blue-200 mb-4">
-                  <strong>Single Responsibility:</strong> Observe, evaluate, and improve the Athlete's performance
+                  <strong>Single Responsibility:</strong> Observe, evaluate, and improve the Athlete&apos;s performance
                 </p>
                 <ul className="text-blue-200 text-sm space-y-2 mb-4">
                   <li>• <strong>Training expert:</strong> Understands RL algorithms, optimization, and learning strategies</li>
-                  <li>• <strong>Performance monitor:</strong> Observes the Athlete's actions and outcomes</li>
+                  <li>• <strong>Performance monitor:</strong> Observes the Athlete&apos;s actions and outcomes</li>
                   <li>• <strong>Feedback provider:</strong> Computes rewards and provides training signals</li>
                   <li>• <strong>Strategy developer:</strong> Uses a "playbook" (RL algorithms) to devise better approaches</li>
                   <li>• <strong>Agent agnostic:</strong> Can train any agent through the Interpreter interface</li>
@@ -204,7 +204,7 @@ coach.train(
                   <h3 className="text-2xl font-semibold text-purple-400">The Interpreter (Agent Adapter)</h3>
                 </div>
                 <p className="text-purple-200 mb-4">
-                  <strong>Single Responsibility:</strong> Translate between the Coach and Athlete's "languages"
+                  <strong>Single Responsibility:</strong> Translate between the Coach and Athlete&apos;s &quot;languages&quot;
                 </p>
                 <ul className="text-purple-200 text-sm space-y-2 mb-4">
                   <li>• <strong>Translation layer:</strong> Converts between agent-specific and RL-generic formats</li>
@@ -244,8 +244,8 @@ coach = Brain(
           <h2 className="text-3xl font-semibold text-white mb-6">Mapping the Paradigm to Code</h2>
           <div className="bg-gray-800 rounded-lg p-6 mb-6">
             <p className="text-gray-300 mb-6">
-              The beauty of the Coach-Athlete paradigm is how directly it maps to ToolBrain's class architecture. 
-              This isn't just a metaphor - it's the actual design:
+              The beauty of the Coach-Athlete paradigm is how directly it maps to ToolBrain&apos;s class architecture. 
+              This isn&apos;t just a metaphor - it&apos;s the actual design:
             </p>
 
             <div className="overflow-x-auto mb-6">
@@ -381,7 +381,7 @@ coach.train(tasks=tasks, num_iterations=50)
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-green-300 mb-2">🚫 What Users Don't Need to Know</h4>
+                    <h4 className="font-semibold text-green-300 mb-2">🚫 What Users Don&apos;t Need to Know</h4>
                     <ul className="text-green-200 text-sm space-y-1">
                       <li>• RL algorithm implementation details</li>
                       <li>• Gradient computation and backpropagation</li>
@@ -400,7 +400,7 @@ coach.train(tasks=tasks, num_iterations=50)
                     </div>
                     <div className="flex items-center gap-4">
                       <span className="text-green-400 w-16">After:</span>
-                      <span className="text-gray-300 text-sm">"I need to create my agent and define what 'good performance' looks like"</span>
+                      <span className="text-gray-300 text-sm">&quot;I need to create my agent and define what &apos;good performance&apos; looks like&quot;</span>
                     </div>
                   </div>
                 </div>
@@ -578,7 +578,7 @@ brain.train(tasks=my_tasks)`}
           <h2 className="text-3xl font-semibold text-white mb-6">The Paradigm in Practice</h2>
           <div className="bg-gray-800 rounded-lg p-6">
             <p className="text-gray-300 mb-4">
-              The Coach-Athlete paradigm isn't just a design philosophy - it's a practical architecture that delivers 
+              The Coach-Athlete paradigm isn&apos;t just a design philosophy - it&apos;s a practical architecture that delivers 
               real benefits every day:
             </p>
 

@@ -285,7 +285,7 @@ if __name__ == "__main__":
         <div className="bg-gradient-to-r from-[#58A6FF]/10 to-[#7C3AED]/10 border border-[#58A6FF]/20 rounded-lg p-8 text-center">
           <h2 className="text-2xl font-bold text-[#E6EDF3] mb-4">🚀 Ready for the Next Step?</h2>
           <p className="text-gray-300 mb-6">
-            Great! ToolBrain is now installed and ready. Let's create your first intelligent agent.
+            Great! ToolBrain is now installed and ready. Let&apos;s create your first intelligent agent.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

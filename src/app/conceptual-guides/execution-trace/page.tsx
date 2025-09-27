@@ -10,7 +10,7 @@ export default function ExecutionTrace() {
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-4">Conceptual Guide: The Execution Trace</h1>
           <p className="text-gray-300 text-lg">
-            Understanding ToolBrain's high-fidelity execution traces - the critical innovation that ensures 
+            Understanding ToolBrain&apos;s high-fidelity execution traces - the critical innovation that ensures 
             reliable RL training by capturing every detail of agent-environment interactions.
           </p>
         </div>
@@ -20,7 +20,7 @@ export default function ExecutionTrace() {
           <h2 className="text-3xl font-semibold text-white mb-6">The Problem: "Garbage In, Garbage Out" in RL</h2>
           <div className="bg-gray-800 rounded-lg p-6 mb-6">
             <p className="text-gray-300 mb-4">
-              In reinforcement learning, there's a fundamental principle that determines the quality of your trained models: 
+              In reinforcement learning, there&apos;s a fundamental principle that determines the quality of your trained models: 
               <strong className="text-red-400"> the quality of RL training is entirely dependent on the quality of the data it learns from</strong>.
             </p>
 
@@ -56,7 +56,7 @@ export default function ExecutionTrace() {
             <div className="bg-gray-700 rounded-lg p-6">
               <h4 className="font-semibold text-gray-300 mb-3">🔍 Real-World Example: What Gets Lost</h4>
               <p className="text-gray-300 mb-3 text-sm">
-                Consider an agent trying to solve a math problem. Here's what typically gets logged vs. what actually happened:
+                Consider an agent trying to solve a math problem. Here&apos;s what typically gets logged vs. what actually happened:
               </p>
               
               <div className="grid md:grid-cols-2 gap-4">
@@ -98,7 +98,7 @@ Parsed result: {"result": "4"}`}
               <p className="text-yellow-200 text-sm">
                 When you train on incomplete or processed data, your model learns from a distorted view of reality. 
                 This leads to poor performance, unreliable behavior, and difficulty debugging issues. 
-                <strong>You can't fix what you can't see.</strong>
+                <strong>You can&apos;t fix what you can&apos;t see.</strong>
               </p>
             </div>
           </div>
@@ -110,7 +110,7 @@ Parsed result: {"result": "4"}`}
           <div className="bg-gray-800 rounded-lg p-6 mb-6">
             <p className="text-gray-300 mb-4">
               ToolBrain solves this fundamental problem with the <strong className="text-green-400">Execution Trace</strong> - 
-              a definitive, structured record of an agent's interaction with its environment that captures 
+              a definitive, structured record of an agent&apos;s interaction with its environment that captures 
               <em>every single detail</em> of what happened during execution.
             </p>
 
@@ -169,8 +169,8 @@ from typing import TypedDict, Optional, Any, List
 
 class ParsedCompletion(TypedDict):
     """
-    Structured interpretation of the model's raw output.
-    Represents how the framework parses and understands the model's response.
+    Structured interpretation of the model&apos;s raw output.
+    Represents how the framework parses and understands the model&apos;s response.
     """
     thought: Optional[str]        # Model's reasoning or explanation
     tool_code: Optional[str]      # Code or command to execute
@@ -208,7 +208,7 @@ ExecutionTrace = List[Turn]`}
           <div className="bg-gray-800 rounded-lg p-6 mb-6">
             <p className="text-gray-300 mb-6">
               Every field in the Turn structure serves a critical purpose for reliable RL training. 
-              Let's examine why each piece of information is essential:
+              Let&apos;s examine why each piece of information is essential:
             </p>
 
             <div className="space-y-6">
@@ -254,7 +254,7 @@ ExecutionTrace = List[Turn]`}
                     <div className="bg-gray-700 rounded p-3 text-sm">
                       <p className="text-green-300 mb-2"><strong>Why Critical:</strong></p>
                       <ul className="text-green-200 space-y-1">
-                        <li>• Contains the model's exact reasoning and thought process</li>
+                        <li>• Contains the model&apos;s exact reasoning and thought process</li>
                         <li>• Needed for computing action probabilities in RL training</li>
                         <li>• Reveals parsing errors and edge cases</li>
                         <li>• Debugging: "What did the model actually say vs. what we interpreted?"</li>
@@ -275,7 +275,7 @@ ExecutionTrace = List[Turn]`}
                       <code className="bg-gray-700 px-2 py-1 rounded text-sm">parsed_completion</code>
                     </h3>
                     <p className="text-purple-200 mb-3">
-                      <strong>The framework's structured interpretation of the raw output.</strong> Shows how the system understood the model's response.
+                      <strong>The framework&apos;s structured interpretation of the raw output.</strong> Shows how the system understood the model&apos;s response.
                     </p>
                     <div className="bg-gray-700 rounded p-3 text-sm">
                       <p className="text-purple-300 mb-2"><strong>Why Critical:</strong></p>
@@ -301,7 +301,7 @@ ExecutionTrace = List[Turn]`}
                       <code className="bg-gray-700 px-2 py-1 rounded text-sm">tool_output</code>
                     </h3>
                     <p className="text-orange-200 mb-3">
-                      <strong>The string representation of the tool's result.</strong> This is what the LLM sees in the next turn.
+                      <strong>The string representation of the tool&apos;s result.</strong> This is what the LLM sees in the next turn.
                     </p>
                     <div className="bg-gray-700 rounded p-3 text-sm">
                       <p className="text-orange-300 mb-2"><strong>Why Critical:</strong></p>
@@ -376,7 +376,7 @@ ExecutionTrace = List[Turn]`}
           <h2 className="text-3xl font-semibold text-white mb-6">A Complete Execution Trace Example</h2>
           <div className="bg-gray-800 rounded-lg p-6 mb-6">
             <p className="text-gray-300 mb-4">
-              Here's what a real Execution Trace looks like for a simple math problem:
+              Here&apos;s what a real Execution Trace looks like for a simple math problem:
             </p>
             
             <CodeBlock language="python">
@@ -577,7 +577,7 @@ def advanced_math_reward(trace: ExecutionTrace) -> float:
                     <ul className="text-purple-200 text-sm space-y-1">
                       <li>• "Why did the agent choose this action?"</li>
                       <li>• "What went wrong in this tool call?"</li>
-                      <li>• "How was the model's output interpreted?"</li>
+                      <li>• &quot;How was the model&apos;s output interpreted?&quot;</li>
                       <li>• "What context was missing from this turn?"</li>
                       <li>• "Why did the reward function give this score?"</li>
                     </ul>
@@ -660,7 +660,7 @@ def debug_trace(trace: ExecutionTrace):
           <h2 className="text-3xl font-semibold text-white mb-6">The Foundation of Reliable RL</h2>
           <div className="bg-gray-800 rounded-lg p-6">
             <p className="text-gray-300 mb-4">
-              The Execution Trace isn't just a nice-to-have feature - it's the foundational innovation that makes 
+              The Execution Trace isn&apos;t just a nice-to-have feature - it&apos;s the foundational innovation that makes 
               reliable reinforcement learning for agents possible. By capturing every detail of agent-environment 
               interactions with perfect fidelity, ToolBrain ensures that:
             </p>

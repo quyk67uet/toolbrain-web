@@ -515,7 +515,7 @@ print(f"Total computation time saved: {optimizer.get_time_savings():.1f}x")`}
         <div className="bg-gradient-to-r from-[#58A6FF]/10 to-[#7C3AED]/10 border border-[#58A6FF]/20 rounded-lg p-8">
           <h2 className="text-2xl font-bold text-[#E6EDF3] mb-4">🚀 Complete Optimization Pipeline</h2>
           <p className="text-gray-300 mb-6">
-            Here's a comprehensive example that combines multiple optimization techniques:
+            Here&apos;s a comprehensive example that combines multiple optimization techniques:
           </p>
           
           <CodeBlock language="python">

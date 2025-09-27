@@ -42,7 +42,7 @@ const navigation: NavItem[] = [
   {
     name: 'CONCEPTUAL GUIDES',
     children: [
-      { name: 'The \'Coach-Athlete\' Paradigm', href: '/conceptual-guides/coach-athlete-paradigm' },
+      { name: 'The &apos;Coach-Athlete&apos; Paradigm', href: '/conceptual-guides/coach-athlete-paradigm' },
       { name: 'The Execution Trace', href: '/conceptual-guides/execution-trace' },
     ]
   },
