@@ -7,267 +7,201 @@ export default function Quickstart() {
   return (
     <Layout>
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">Quickstart: Your First Trained Agent in 7 Lines of Code</h1>
-          <p className="text-gray-300 text-lg">
-            Guide through the simplest possible end-to-end example. This should be your "Aha!" moment with ToolBrain.
+        {/* Header */}
+        <div className="mb-12">
+          <h1 className="text-4xl font-bold text-[#E6EDF3] mb-6">Quickstart: Your First Trained Agent</h1>
+          <p className="text-xl text-gray-400 leading-relaxed mb-8">
+            In this guide, we&apos;ll walk you through the entire process of training your first agent with ToolBrain. 
+            We&apos;ll train a simple CodeAgent to reliably use a multiply tool. By the end, you&apos;ll have a 
+            fine-tuned agent saved to your disk, all in just a few simple steps.
           </p>
+
+          {/* Prerequisites */}
+          <div className="bg-[#2D1B1B] border border-[#F85149]/30 rounded-lg p-6">
+            <h3 className="text-lg font-semibold text-[#F85149] mb-3">⚡ Prerequisites</h3>
+            <p className="text-gray-300 mb-4">
+              Before you begin, make sure you have installed ToolBrain with the necessary dependencies for training. 
+              We recommend the <code className="bg-[#21262D] px-2 py-1 rounded text-[#58A6FF]">[unsloth]</code> extra for the best performance.
+            </p>
+            <CodeBlock language="bash">
+              pip install &quot;toolbrain[unsloth]&quot;
+            </CodeBlock>
+          </div>
         </div>
 
-        {/* Introduction */}
+        {/* Step 1: Define Your Agent and Task */}
         <section className="mb-12">
-          <div className="bg-blue-900/20 border border-blue-600 rounded-lg p-6 mb-8">
-            <h2 className="text-2xl font-semibold text-blue-400 mb-4">🎯 Goal</h2>
-            <p className="text-blue-200">
-              In this quickstart, we&apos;ll train an intelligent agent to master finance APIs through reinforcement learning. 
-              The agent will learn to use tools effectively by practicing on generated examples and receiving feedback 
-              from a teacher model.
+          <h2 className="text-3xl font-bold text-[#E6EDF3] mb-6">Step 1: Define Your Agent and Task</h2>
+          <p className="text-lg text-gray-400 mb-8 leading-relaxed">
+            First, let&apos;s set up the basic building blocks. We&apos;ll create a standard smolagents.CodeAgent and 
+            provide it with a simple multiply tool. ToolBrain is designed to work with your existing agent 
+            definitions without modification. Then, we&apos;ll define the task we want the agent to learn.
+          </p>
+
+          {/* Code Block 1.1: The Tool & Agent */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-[#58A6FF] mb-4">1.1. The Tool & Agent</h3>
+            <div className="bg-[#161B22] border border-[#30363D] rounded-lg p-6">
+              <CodeBlock language="python">
+{`from smolagents import CodeAgent, tool
+from toolbrain.models import UnslothModel # Using our optimized model class
+
+# 1. Define a tool for the agent
+@tool
+def multiply(a: int, b: int) -> int:
+    """Multiplies two integers."""
+    return a * b
+
+# 2. Create your agent
+my_agent = CodeAgent(
+    model=UnslothModel(model_id="Qwen/Qwen2.5-0.5B-Instruct"),
+    tools=[multiply]
+)`}
+              </CodeBlock>
+            </div>
+          </div>
+
+          {/* Code Block 1.2: The Task */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-[#58A6FF] mb-4">1.2. The Task</h3>
+            <p className="text-gray-400 mb-4">
+              Our training dataset will consist of a single task: asking the agent to calculate 6 multiplied by 7, 
+              where the correct answer is 42.
             </p>
+            <div className="bg-[#161B22] border border-[#30363D] rounded-lg p-6">
+              <CodeBlock language="python">
+{`# 3. Define the training task
+dataset = [{
+    "query": "What is 6 multiplied by 7?",
+    "gold_answer": "42" # This will be used by the reward function
+}]`}
+              </CodeBlock>
+            </div>
           </div>
         </section>
 
-        {/* Step 1: Define Tool & Reward */}
+        {/* Step 2: Train with the Brain */}
         <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Step 1: Define a Tool & Reward Function</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              First, let&apos;s set up a simple tool and reward function. For this example, we&apos;ll use finance APIs and 
-              define how to judge the agent&apos;s performance.
-            </p>
-            
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold text-blue-400 mb-3">Available Tools</h3>
+          <h2 className="text-3xl font-bold text-[#E6EDF3] mb-6">Step 2: Train with the Brain</h2>
+          <p className="text-lg text-gray-400 mb-8 leading-relaxed">
+            This is where the magic happens. We import the Brain and one of its built-in reward functions, 
+            reward_exact_match. We then initialize the Brain with our components and start the entire RL 
+            training process with a single <code className="bg-[#21262D] px-2 py-1 rounded text-[#58A6FF]">.train()</code> command.
+          </p>
+
+          {/* Code Block 2.1: Initialize and Train */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-[#58A6FF] mb-4">2.1. Initialize and Train</h3>
+            <div className="bg-[#161B22] border border-[#30363D] rounded-lg p-6">
               <CodeBlock language="python">
-{`# Example finance tools the agent will learn to use
-finance_tools = [
-    get_stock_price,      # Get current stock price
-    calculate_portfolio,  # Calculate portfolio value  
-    get_market_data,     # Fetch market indicators
-    risk_analysis        # Perform risk assessment
-]`}
-              </CodeBlock>
-            </div>
+{`from toolbrain import Brain
+from toolbrain.rewards import reward_exact_match # Import a built-in reward
 
-            <div>
-              <h3 className="text-xl font-semibold text-blue-400 mb-3">Reward Function</h3>
-              <CodeBlock language="python">
-{`# Define how to evaluate the agent's performance
-reward_func = llm_judge_or_user_defined  # Uses LLM or custom logic to judge quality`}
-              </CodeBlock>
-              <p className="text-gray-400 text-sm mt-2">
-                The reward function evaluates how well the agent uses tools to complete financial analysis tasks.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Step 2: The 7-Line Workflow */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Step 2: The 7-Line ToolBrain Workflow</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-6">
-              Here&apos;s the complete ToolBrain workflow in just 7 lines of code. Each step builds upon the previous one 
-              to create a fully trained agent.
-            </p>
-
-            <div className="space-y-8">
-              {/* Line 1-2: Create Student Agent */}
-              <div>
-                <h3 className="text-lg font-semibold text-blue-400 mb-3">1. Create the Student Agent</h3>
-                <CodeBlock language="python">
-{`student_agent = CodeAgent(
-    model="Qwen/3B-Instruct",
-    tools=[all_available_tools]
-)`}
-                </CodeBlock>
-                <p className="text-gray-400 text-sm mt-2">
-                  Initialize a code-generating agent with a 3B parameter model and provide access to all available tools.
-                </p>
-              </div>
-
-              {/* Line 3-6: Configure Brain */}
-              <div>
-                <h3 className="text-lg font-semibold text-blue-400 mb-3">2. Configure the Training Brain</h3>
-                <CodeBlock language="python">
-{`brain = Brain(
-    agent=student_agent, 
-    reward_func=reward_func,
-    enable_tool_retrieval=True,
-    learning_algorithm="GRPO"
-)`}
-                </CodeBlock>
-                <p className="text-gray-400 text-sm mt-2">
-                  Set up the Brain with your agent, reward function, tool retrieval enabled, and GRPO (Generalized Reinforcement Policy Optimization) algorithm.
-                </p>
-              </div>
-
-              {/* Line 7: Generate Training Examples */}
-              <div>
-                <h3 className="text-lg font-semibold text-blue-400 mb-3">3. Generate Training Data</h3>
-                <CodeBlock language="python">
-{`training_tasks = brain.generate_training_examples(
-    task_description="Master the finance APIs"
-)`}
-                </CodeBlock>
-                <p className="text-gray-400 text-sm mt-2">
-                  Automatically generate diverse training examples focused on mastering finance API usage.
-                </p>
-              </div>
-
-              {/* Line 8: Distill Knowledge */}
-              <div>
-                <h3 className="text-lg font-semibold text-blue-400 mb-3">4. Knowledge Distillation</h3>
-                <CodeBlock language="python">
-{`brain.distill(
-    dataset=training_tasks,
-    teacher_model_id="GPT-4-Turbo"
-)`}
-                </CodeBlock>
-                <p className="text-gray-400 text-sm mt-2">
-                  Use a powerful teacher model (GPT-4-Turbo) to provide high-quality demonstrations for the student agent.
-                </p>
-              </div>
-
-              {/* Line 9: Train */}
-              <div>
-                <h3 className="text-lg font-semibold text-blue-400 mb-3">5. Start Training</h3>
-                <CodeBlock language="python">
-{`brain.train(dataset=training_tasks)`}
-                </CodeBlock>
-                <p className="text-gray-400 text-sm mt-2">
-                  Begin the reinforcement learning training process using the generated dataset.
-                </p>
-              </div>
-            </div>
-
-            {/* Complete Code Block */}
-            <div className="mt-8 p-4 bg-gray-900 rounded-lg border border-green-600">
-              <h3 className="text-lg font-semibold text-green-400 mb-3">🚀 Complete 7-Line Script</h3>
-              <CodeBlock language="python">
-{`reward_func = llm_judge_or_user_defined
-
-student_agent = CodeAgent(
-    model="Qwen/3B-Instruct",
-    tools=[all_available_tools]
-)
-
+# 1. Initialize the Brain
 brain = Brain(
-    agent=student_agent, 
-    reward_func=reward_func,
-    enable_tool_retrieval=True,
-    learning_algorithm="GRPO"
+    agent=my_agent,
+    # Use a built-in function that checks if the agent's
+    # final_answer matches the 'gold_answer' in our dataset.
+    reward_func=reward_exact_match,
+    learning_algorithm="GRPO",
+    num_group_members=4 # Generate 4 attempts per query for robust learning
 )
 
-training_tasks = brain.generate_training_examples(
-    task_description="Master the finance APIs"
-)
-
-brain.distill(
-    dataset=training_tasks,
-    teacher_model_id="GPT-4-Turbo"
-)
-
-brain.train(dataset=training_tasks)`}
+# 2. Run the training!
+brain.train(dataset=dataset, num_iterations=10)`}
               </CodeBlock>
             </div>
-          </div>
-        </section>
-
-        {/* Step 3: Run it */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Step 3: Run It!</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              Save the code above as <code className="bg-gray-700 px-2 py-1 rounded">quickstart.py</code> and run it:
-            </p>
-            
-            <CodeBlock language="bash">
-{`python quickstart.py`}
-            </CodeBlock>
-            
-            <div className="mt-4 p-4 bg-yellow-900/20 border border-yellow-600 rounded-lg">
-              <h4 className="font-semibold text-yellow-400 mb-2">⚡ What Happens Next</h4>
-              <ul className="text-yellow-200 text-sm space-y-1">
-                <li>• ToolBrain generates diverse finance API tasks</li>
-                <li>• GPT-4-Turbo provides expert demonstrations</li>
-                <li>• Your student agent learns through reinforcement learning</li>
-                <li>• Training progress is monitored and optimized automatically</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* Step 4: The Result */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Step 4: The Result</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              After training completes, you&apos;ll have an intelligent agent that has learned to effectively use finance APIs. 
-              Here&apos;s what you can expect:
-            </p>
-
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <div className="bg-green-900/20 border border-green-600 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-green-400 mb-2">✅ Agent Capabilities</h3>
-                <ul className="text-green-200 text-sm space-y-1">
-                  <li>• Correctly uses finance APIs</li>
-                  <li>• Handles complex multi-step queries</li>
-                  <li>• Provides accurate financial analysis</li>
-                  <li>• Adapts to new scenarios</li>
-                </ul>
-              </div>
-              
-              <div className="bg-blue-900/20 border border-blue-600 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-blue-400 mb-2">📊 Training Metrics</h3>
-                <ul className="text-blue-200 text-sm space-y-1">
-                  <li>• Reward progression over time</li>
-                  <li>• Tool usage accuracy</li>
-                  <li>• Task completion rate</li>
-                  <li>• Performance comparisons</li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold text-blue-400 mb-3">Testing Your Trained Agent</h3>
-              <CodeBlock language="python">
-{`# Test the trained agent on a new task
-result = student_agent.execute(
-    task="Analyze the risk profile of AAPL stock and suggest portfolio allocation"
-)
-
-print(f"Agent response: {result.response}")
-print(f"Tools used: {result.tools_used}")
-print(f"Execution trace: {result.trace}")`}
-              </CodeBlock>
-            </div>
-
-            <div className="bg-purple-900/20 border border-purple-600 rounded-lg p-4">
-              <h4 className="font-semibold text-purple-400 mb-2">🎉 Congratulations!</h4>
-              <p className="text-purple-200 text-sm">
-                You&apos;ve just trained your first intelligent agent with ToolBrain! The agent can now autonomously 
-                use finance APIs to solve complex tasks. From here, you can explore advanced features like 
-                multi-agent systems, custom reward functions, and distributed training.
+            <div className="mt-4 bg-[#1B2D1B] border border-[#3FB950]/30 rounded-lg p-4">
+              <p className="text-[#3FB950] text-sm">
+                <strong>💡 Note:</strong> After running, you will see logs of the training process, including 
+                trace collection, reward computation, and model updates.
               </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Step 3: Save and Reload Your Trained Agent */}
+        <section className="mb-12">
+          <h2 className="text-3xl font-bold text-[#E6EDF3] mb-6">Step 3: Save and Reload Your Trained Agent</h2>
+          <p className="text-lg text-gray-400 mb-8 leading-relaxed">
+            After training, ToolBrain makes it easy to save your agent&apos;s learned skills (the LoRA adapters) 
+            and reload them for later use or deployment.
+          </p>
+
+          {/* Code Block 3.1: Save the Agent */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-[#58A6FF] mb-4">3.1. Save the Agent</h3>
+            <div className="bg-[#161B22] border border-[#30363D] rounded-lg p-6">
+              <CodeBlock language="python">
+{`# Save the trained LoRA adapters to a directory
+brain.save("./my_trained_math_agent")`}
+              </CodeBlock>
+            </div>
+          </div>
+
+          {/* Code Block 3.2: Load the Agent */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-[#58A6FF] mb-4">3.2. Load the Agent</h3>
+            <div className="bg-[#161B22] border border-[#30363D] rounded-lg p-6">
+              <CodeBlock language="python">
+{`# You can later load these adapters into a fresh agent instance
+
+# First, create a base agent (same as before)
+base_agent = CodeAgent(
+    model=UnslothModel(model_id="Qwen/Qwen2.5-0.5B-Instruct"),
+    tools=[multiply]
+)
+
+# Now, load the trained skills into it
+trained_agent = Brain.load_agent(
+    model_dir="./my_trained_math_agent",
+    agent_to_load_into=base_agent
+)`}
+              </CodeBlock>
             </div>
           </div>
         </section>
 
         {/* Next Steps */}
         <section className="mb-12">
-          <div className="bg-gray-800 rounded-lg p-6 text-center">
-            <h2 className="text-2xl font-bold text-white mb-4">Ready for More?</h2>
-            <p className="text-gray-300 mb-6">
-              Now that you&apos;ve seen the power of ToolBrain, explore advanced tutorials and features.
+          <h2 className="text-3xl font-bold text-[#E6EDF3] mb-6">Next Steps</h2>
+          <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-8">
+            <p className="text-xl text-gray-300 mb-6 leading-relaxed">
+              <strong className="text-[#3FB950]">Congratulations!</strong> You&apos;ve just trained, saved, and reloaded your first agent with ToolBrain.
             </p>
-            
+            <p className="text-lg text-gray-400 mb-8 leading-relaxed">
+              You&apos;ve seen how the Brain API simplifies a complex RL workflow into a few intuitive steps. 
+              To dive deeper into our advanced capabilities, we recommend exploring the following sections:
+            </p>
+
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <div className="bg-[#2D1B1B] border border-[#F85149]/30 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-[#F85149] mb-3">🔧 Key Features</h3>
+                <p className="text-gray-300 text-sm">
+                  Get a detailed overview of features like our LLM-as-a-Judge, Knowledge Distillation, and more.
+                </p>
+              </div>
+              <div className="bg-[#1B2D1B] border border-[#3FB950]/30 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-[#3FB950] mb-3">📚 Conceptual Guides</h3>
+                <p className="text-gray-300 text-sm">
+                  Understand the core design principles behind ToolBrain, like the &apos;Coach-Athlete&apos; paradigm.
+                </p>
+              </div>
+            </div>
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-[#58A6FF] hover:bg-[#4A90E2] text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
-                Advanced Tutorials
-              </button>
-              <button className="border border-[#30363D] hover:border-[#58A6FF] text-[#E6EDF3] px-6 py-3 rounded-lg font-medium transition-colors duration-200">
+              <a 
+                href="/key-features"
+                className="bg-[#58A6FF] hover:bg-[#4A90E2] text-white px-8 py-3 rounded-lg font-medium transition-colors duration-200 text-center"
+              >
                 Explore Key Features
-              </button>
+              </a>
+              <a 
+                href="/conceptual-guides"
+                className="border border-[#30363D] hover:border-[#58A6FF] text-[#E6EDF3] px-8 py-3 rounded-lg font-medium transition-colors duration-200 text-center"
+              >
+                Read Conceptual Guides
+              </a>
             </div>
           </div>
         </section>
