@@ -4,506 +4,303 @@ import Layout from '@/components/Layout';
 import CodeBlock from '@/components/CodeBlock';
 
 export default function MultipleAlgorithms() {
-  return (
-    <Layout>
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">Guide: Multiple Learning Algorithms</h1>
-          <p className="text-gray-300 text-lg">
-            Explore ToolBrain's support for different learning algorithms, from reinforcement learning to supervised fine-tuning, with easy algorithm switching.
-          </p>
-        </div>
-
-        {/* Algorithm Overview */}
-        <section className="mb-12">
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              ToolBrain supports multiple learning algorithms, each optimized for different types of tasks and training scenarios. 
-              You can easily switch between algorithms using the <code className="bg-gray-700 px-2 py-1 rounded">learning_algorithm</code> 
-              parameter in the Brain constructor.
-            </p>
-            
-            <div className="grid md:grid-cols-3 gap-4">
-              <div className="bg-blue-900/20 border border-blue-600 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-blue-400 mb-2">🎯 GRPO</h3>
-                <p className="text-blue-200 text-sm">
-                  Generalized Reinforcement Policy Optimization. Best for complex reasoning tasks and tool usage scenarios.
-                </p>
-              </div>
-              
-              <div className="bg-purple-900/20 border border-purple-600 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-purple-400 mb-2">🔄 DPO</h3>
-                <p className="text-purple-200 text-sm">
-                  Direct Preference Optimization. Ideal for tasks with comparative feedback and ranking-based rewards.
-                </p>
-              </div>
-              
-              <div className="bg-green-900/20 border border-green-600 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-green-400 mb-2">📚 SFT</h3>
-                <p className="text-green-200 text-sm">
-                  Supervised Fine-Tuning. Perfect for knowledge distillation and learning from expert demonstrations.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Easy Algorithm Switching */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Easy Algorithm Switching</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              Switching between algorithms is as simple as changing the <code className="bg-gray-700 px-2 py-1 rounded">learning_algorithm</code> 
-              parameter in the Brain's <code className="bg-gray-700 px-2 py-1 rounded">__init__</code> method:
-            </p>
-            
-            <CodeBlock language="python">
-{`# From Brain.__init__ method in toolbrain/brain.py
-class Brain:
-    def __init__(
-        self,
-        agent,
-        reward_func=None,
-        learning_algorithm="GRPO",  # <- Easy algorithm selection
-        max_steps=1000,
-        batch_size=32,
-        learning_rate=1e-4,
-        **kwargs
-    ):
-        """
-        Initialize Brain with specified learning algorithm.
-        
-        Args:
-            learning_algorithm (str): Algorithm to use for training
-                - "GRPO": Generalized Reinforcement Policy Optimization
-                - "DPO": Direct Preference Optimization  
-                - "SFT": Supervised Fine-Tuning
-        """
-        self.learning_algorithm = learning_algorithm
-        self._setup_trainer(learning_algorithm)
-    
-    def _setup_trainer(self, algorithm):
-        """Configure trainer based on selected algorithm."""
-        if algorithm == "GRPO":
-            self.trainer = GRPOTrainer(
-                model=self.agent.model,
-                reward_func=self.reward_func,
-                **self.training_config
-            )
-        elif algorithm == "DPO":
-            self.trainer = DPOTrainer(
-                model=self.agent.model,
-                preference_data=self.preference_data,
-                **self.training_config
-            )
-        elif algorithm == "SFT":
-            self.trainer = SFTTrainer(
-                model=self.agent.model,
-                dataset=self.supervised_dataset,
-                **self.training_config
-            )`}
-            </CodeBlock>
-
-            <div className="mt-6">
-              <h3 className="text-xl font-semibold text-blue-400 mb-3">Algorithm Switching Examples</h3>
-              <CodeBlock language="python">
-{`# Same agent, different algorithms
-agent = CodeAgent(model="Qwen/3B-Instruct", tools=finance_tools)
-
-# GRPO for complex reasoning
-brain_grpo = Brain(
-    agent=agent,
-    reward_func=complex_reasoning_reward,
+  const grpoCode = `brain = Brain(
+    agent=my_agent,
+    reward_func=my_scalar_reward_function,
     learning_algorithm="GRPO",
-    max_steps=1000
-)
+    num_group_members=8 # GRPO thrives on group comparison
+)`;
 
-# DPO for preference learning
-brain_dpo = Brain(
-    agent=agent,
+  const dpoCode = `from toolbrain.rewards import reward_llm_judge_via_ranking
+
+brain = Brain(
+    agent=my_agent,
     reward_func=reward_llm_judge_via_ranking,
     learning_algorithm="DPO",
-    max_steps=800
+    num_group_members=4 # Needs at least 2 to create pairs
+)`;
+
+  const distillationCode = `# The Brain is initialized for a later RL phase (e.g., GRPO)
+brain = Brain(agent=student_agent, ..., learning_algorithm="GRPO")
+
+# But first, we run distillation, which uses supervised learning internally
+brain.distill(
+    dataset=training_tasks,
+    teacher_model_id="GPT-4-Turbo"
 )
 
-# SFT for knowledge transfer
-brain_sft = Brain(
-    agent=agent,
-    learning_algorithm="SFT",
-    max_steps=500  # Usually needs fewer steps
-)
+# Now, the agent is pre-trained and ready for RL
+brain.train(dataset=training_tasks)`;
 
-# Train with different algorithms
-for brain, name in [(brain_grpo, "GRPO"), (brain_dpo, "DPO"), (brain_sft, "SFT")]:
-    print(f"Training with {name}...")
-    brain.train(dataset=training_data)
-    results = brain.evaluate(test_data)
-    print(f"{name} Results: {results.average_score}")`}
-              </CodeBlock>
+  return (
+    <Layout>
+      <div className="max-w-6xl mx-auto">
+        {/* PHẦN 1: THE POWER OF CHOICE */}
+        <div className="text-center mb-20">
+          <h1 className="text-5xl font-bold text-[#E6EDF3] mb-8">
+            Multiple Learning Algorithms
+          </h1>
+          
+          <div className="max-w-4xl mx-auto space-y-6">
+            <p className="text-xl text-gray-400 leading-relaxed">
+              Different agentic tasks require different learning strategies. A one-size-fits-all approach is often suboptimal. 
+              ToolBrain provides out-of-the-box support for a range of state-of-the-art learning algorithms, allowing you to 
+              choose the best approach for your specific problem.
+            </p>
+            
+            <div className="bg-gradient-to-r from-[#58A6FF]/10 to-[#3FB950]/10 border border-[#58A6FF]/30 rounded-xl p-6">
+              <p className="text-xl font-semibold text-[#58A6FF]">
+                Switching between algorithms is as simple as changing a single string parameter in the Brain constructor.
+              </p>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* GRPO & DPO Comparison */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">GRPO vs DPO: Key Differences</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <div className="bg-blue-900/20 border border-blue-600 rounded-lg p-6">
-                <h3 className="text-2xl font-semibold text-blue-400 mb-4">🎯 GRPO</h3>
-                <p className="text-blue-200 mb-4">
-                  <strong>Generalized Reinforcement Policy Optimization</strong> - An advanced RL algorithm that 
-                  optimizes policies through reward-based feedback.
-                </p>
-                
-                <h4 className="font-semibold text-blue-300 mb-2">Best For:</h4>
-                <ul className="text-blue-200 text-sm space-y-1 mb-4">
-                  <li>• Complex multi-step reasoning tasks</li>
-                  <li>• Tool usage and API interaction</li>
-                  <li>• Environments with sparse rewards</li>
-                  <li>• Tasks requiring exploration</li>
-                </ul>
-                
-                <h4 className="font-semibold text-blue-300 mb-2">Characteristics:</h4>
-                <ul className="text-blue-200 text-sm space-y-1">
-                  <li>• Learns from reward signals</li>
-                  <li>• Handles credit assignment well</li>
-                  <li>• Good at exploration-exploitation balance</li>
-                  <li>• Robust to reward function changes</li>
-                </ul>
+        {/* Algorithm Selection Visual */}
+        <div className="mb-20">
+          <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-12">
+            <h3 className="text-2xl font-bold text-[#E6EDF3] text-center mb-8">
+              Choose Your Learning Strategy
+            </h3>
+            
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="bg-gradient-to-br from-[#58A6FF]/15 to-[#4A90E2]/15 border border-[#58A6FF]/50 rounded-xl p-6 text-center hover:scale-105 transition-transform">
+                <div className="text-4xl mb-4">📊</div>
+                <h4 className="text-xl font-bold text-[#58A6FF] mb-3">GRPO</h4>
+                <p className="text-gray-300 text-sm">Group Relative Policy Optimization</p>
+                <p className="text-[#3FB950] text-sm mt-2">Best for scalar rewards</p>
               </div>
               
-              <div className="bg-purple-900/20 border border-purple-600 rounded-lg p-6">
-                <h3 className="text-2xl font-semibold text-purple-400 mb-4">🔄 DPO</h3>
-                <p className="text-purple-200 mb-4">
-                  <strong>Direct Preference Optimization</strong> - Learns directly from preference comparisons 
-                  without needing explicit reward functions.
-                </p>
-                
-                <h4 className="font-semibold text-purple-300 mb-2">Best For:</h4>
-                <ul className="text-purple-200 text-sm space-y-1 mb-4">
-                  <li>• Subjective quality assessment</li>
-                  <li>• Human preference alignment</li>
-                  <li>• Tasks with ranking-based feedback</li>
-                  <li>• Creative or open-ended tasks</li>
-                </ul>
-                
-                <h4 className="font-semibold text-purple-300 mb-2">Characteristics:</h4>
-                <ul className="text-purple-200 text-sm space-y-1">
-                  <li>• Learns from pairwise comparisons</li>
-                  <li>• No explicit reward modeling needed</li>
-                  <li>• Better for preference alignment</li>
-                  <li>• More stable training dynamics</li>
-                </ul>
+              <div className="bg-gradient-to-br from-[#7C3AED]/15 to-[#6366F1]/15 border border-[#7C3AED]/50 rounded-xl p-6 text-center hover:scale-105 transition-transform">
+                <div className="text-4xl mb-4">⚖️</div>
+                <h4 className="text-xl font-bold text-[#7C3AED] mb-3">DPO</h4>
+                <p className="text-gray-300 text-sm">Direct Preference Optimization</p>
+                <p className="text-[#3FB950] text-sm mt-2">Best for preference feedback</p>
               </div>
-            </div>
-
-            <div className="bg-gray-700 rounded-lg p-4">
-              <h4 className="font-semibold text-yellow-400 mb-2">🤔 When to Choose Which?</h4>
-              <div className="grid md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <p className="text-blue-200 mb-2"><strong>Choose GRPO when:</strong></p>
-                  <ul className="text-gray-300 space-y-1">
-                    <li>• You have clear success metrics</li>
-                    <li>• Task involves tool/API usage</li>
-                    <li>• Multi-step reasoning is required</li>
-                    <li>• Environment provides natural rewards</li>
-                  </ul>
-                </div>
-                <div>
-                  <p className="text-purple-200 mb-2"><strong>Choose DPO when:</strong></p>
-                  <ul className="text-gray-300 space-y-1">
-                    <li>• Quality is subjective</li>
-                    <li>• You have preference data</li>
-                    <li>• Using LLM-as-a-judge rewards</li>
-                    <li>• Human alignment is critical</li>
-                  </ul>
-                </div>
+              
+              <div className="bg-gradient-to-br from-[#3FB950]/15 to-[#10B981]/15 border border-[#3FB950]/50 rounded-xl p-6 text-center hover:scale-105 transition-transform">
+                <div className="text-4xl mb-4">🎓</div>
+                <h4 className="text-xl font-bold text-[#3FB950] mb-3">Distillation</h4>
+                <p className="text-gray-300 text-sm">Supervised Learning</p>
+                <p className="text-[#3FB950] text-sm mt-2">Best for knowledge transfer</p>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* Supervised Fine-Tuning */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Supervised Fine-Tuning (SFT)</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              Supervised Fine-Tuning plays a crucial role in ToolBrain, especially for knowledge distillation and 
-              learning from expert demonstrations.
-            </p>
-
-            <div className="bg-green-900/20 border border-green-600 rounded-lg p-4 mb-6">
-              <h3 className="text-xl font-semibold text-green-400 mb-3">🎯 Role in ToolBrain</h3>
-              <ul className="text-green-200 text-sm space-y-2">
-                <li>• <strong>Knowledge Distillation:</strong> Transfer knowledge from teacher models to student agents</li>
-                <li>• <strong>Pre-training Phase:</strong> Prepare agents with basic capabilities before RL training</li>
-                <li>• <strong>Expert Demonstrations:</strong> Learn from high-quality human or AI-generated examples</li>
-                <li>• <strong>Quick Adaptation:</strong> Rapidly adapt to new domains with limited data</li>
-              </ul>
-            </div>
-
-            <CodeBlock language="python">
-{`# SFT for knowledge distillation workflow
-def distillation_workflow():
-    """Two-phase training: SFT then RL."""
-    
-    # Phase 1: Supervised fine-tuning from teacher
-    teacher_brain = Brain(
-        agent=teacher_agent,  # Large, powerful model
-        learning_algorithm="SFT"
-    )
-    
-    # Generate high-quality demonstrations
-    demonstrations = teacher_brain.generate_training_examples(
-        task_description="Master finance APIs",
-        num_examples=1000
-    )
-    
-    # Phase 2: Train student with SFT on demonstrations
-    student_brain = Brain(
-        agent=student_agent,  # Smaller, efficient model
-        learning_algorithm="SFT",
-        max_steps=500
-    )
-    
-    # Distill knowledge from teacher to student
-    student_brain.train(dataset=demonstrations)
-    
-    # Phase 3: Further improve with RL
-    student_brain.learning_algorithm = "GRPO"
-    student_brain.reward_func = domain_specific_reward
-    
-    # Continue training with reinforcement learning
-    rl_data = student_brain.generate_training_examples(
-        task_description="Advanced finance analysis"
-    )
-    student_brain.train(dataset=rl_data)
-    
-    return student_brain
-
-# Usage
-trained_agent = distillation_workflow()`}
-            </CodeBlock>
-
-            <div className="mt-6">
-              <h3 className="text-xl font-semibold text-blue-400 mb-3">SFT Configuration Options</h3>
-              <CodeBlock language="python">
-{`# Different SFT configurations for different purposes
-configs = {
-    'knowledge_distillation': {
-        'learning_algorithm': 'SFT',
-        'learning_rate': 2e-5,
-        'max_steps': 1000,
-        'batch_size': 16,
-        'warmup_steps': 100
-    },
-    
-    'rapid_adaptation': {
-        'learning_algorithm': 'SFT', 
-        'learning_rate': 5e-5,
-        'max_steps': 200,
-        'batch_size': 8,
-        'warmup_steps': 20
-    },
-    
-    'expert_imitation': {
-        'learning_algorithm': 'SFT',
-        'learning_rate': 1e-5,
-        'max_steps': 2000,
-        'batch_size': 32,
-        'warmup_steps': 200
-    }
-}
-
-# Apply configuration
-brain = Brain(
-    agent=student_agent,
-    **configs['knowledge_distillation']
-)`}
-              </CodeBlock>
-            </div>
-          </div>
-        </section>
-
-        {/* Algorithm Selection Guide */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Algorithm Selection Guide</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-6">
-              Here's a practical guide to help you choose the right algorithm for your specific use case:
-            </p>
-
-            <div className="space-y-6">
-              <div className="bg-gray-700 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-blue-400 mb-3">📊 Finance & Trading Agents</h3>
-                <div className="grid md:grid-cols-3 gap-4 text-sm">
-                  <div>
-                    <p className="text-blue-200 font-medium mb-1">Data Analysis:</p>
-                    <p className="text-gray-300">SFT → GRPO</p>
-                  </div>
-                  <div>
-                    <p className="text-blue-200 font-medium mb-1">Risk Assessment:</p>
-                    <p className="text-gray-300">DPO (subjective judgment)</p>
-                  </div>
-                  <div>
-                    <p className="text-blue-200 font-medium mb-1">Trading Strategies:</p>
-                    <p className="text-gray-300">GRPO (reward-based)</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gray-700 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-purple-400 mb-3">💻 Code Generation Agents</h3>
-                <div className="grid md:grid-cols-3 gap-4 text-sm">
-                  <div>
-                    <p className="text-purple-200 font-medium mb-1">Basic Coding:</p>
-                    <p className="text-gray-300">SFT (from examples)</p>
-                  </div>
-                  <div>
-                    <p className="text-purple-200 font-medium mb-1">Code Quality:</p>
-                    <p className="text-gray-300">DPO (preference-based)</p>
-                  </div>
-                  <div>
-                    <p className="text-purple-200 font-medium mb-1">Complex Problems:</p>
-                    <p className="text-gray-300">GRPO (multi-step)</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gray-700 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-green-400 mb-3">🔍 Research & Analysis Agents</h3>
-                <div className="grid md:grid-cols-3 gap-4 text-sm">
-                  <div>
-                    <p className="text-green-200 font-medium mb-1">Information Gathering:</p>
-                    <p className="text-gray-300">GRPO (tool usage)</p>
-                  </div>
-                  <div>
-                    <p className="text-green-200 font-medium mb-1">Quality Assessment:</p>
-                    <p className="text-gray-300">DPO (subjective)</p>
-                  </div>
-                  <div>
-                    <p className="text-green-200 font-medium mb-1">Report Writing:</p>
-                    <p className="text-gray-300">SFT → DPO</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Practical Examples */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Practical Examples</h2>
-          <div className="bg-gray-800 rounded-lg p-6">
-            <div className="space-y-6">
+        {/* PHẦN 2: SUPPORTED ALGORITHMS */}
+        <div className="space-y-16">
+          
+          {/* 1. GRPO */}
+          <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-8">
+            <div className="grid lg:grid-cols-2 gap-8 items-start">
               <div>
-                <h3 className="text-xl font-semibold text-blue-400 mb-3">Multi-Algorithm Training Pipeline</h3>
-                <CodeBlock language="python">
-{`def multi_stage_training(agent, task_description):
-    """Advanced training pipeline using multiple algorithms."""
-    
-    # Stage 1: Knowledge transfer with SFT
-    print("Stage 1: Knowledge Distillation...")
-    sft_brain = Brain(
-        agent=agent,
-        learning_algorithm="SFT",
-        max_steps=500
-    )
-    
-    expert_demos = sft_brain.generate_training_examples(
-        task_description=f"Basic {task_description}"
-    )
-    sft_brain.distill(dataset=expert_demos, teacher_model_id="GPT-4-Turbo")
-    sft_brain.train(dataset=expert_demos)
-    
-    # Stage 2: Preference alignment with DPO
-    print("Stage 2: Preference Alignment...")
-    dpo_brain = Brain(
-        agent=agent,  # Same agent, now pre-trained
-        learning_algorithm="DPO", 
-        reward_func=reward_llm_judge_via_ranking,
-        max_steps=300
-    )
-    
-    preference_data = dpo_brain.generate_training_examples(
-        task_description=f"High-quality {task_description}"
-    )
-    dpo_brain.train(dataset=preference_data)
-    
-    # Stage 3: Task optimization with GRPO
-    print("Stage 3: Task Optimization...")
-    grpo_brain = Brain(
-        agent=agent,  # Now aligned and knowledgeable
-        learning_algorithm="GRPO",
-        reward_func=task_specific_reward,
-        max_steps=800
-    )
-    
-    optimization_data = grpo_brain.generate_training_examples(
-        task_description=f"Expert {task_description}"
-    )
-    grpo_brain.train(dataset=optimization_data)
-    
-    return agent
-
-# Example usage
-finance_agent = CodeAgent(model="Qwen/3B-Instruct", tools=finance_tools)
-trained_agent = multi_stage_training(finance_agent, "financial analysis")`}
-                </CodeBlock>
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="text-4xl">📊</div>
+                  <div>
+                    <h2 className="text-3xl font-bold text-[#58A6FF] mb-2">
+                      GRPO
+                    </h2>
+                    <p className="text-xl text-gray-300">Group Relative Policy Optimization</p>
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <div className="bg-[#58A6FF]/10 border border-[#58A6FF]/30 rounded-lg p-4 mb-4">
+                    <p className="text-[#58A6FF] font-semibold mb-2">🎯 Best for:</p>
+                    <p className="text-gray-300">Scenarios with clear, scalar reward signals.</p>
+                  </div>
+                  
+                  <p className="text-gray-300 leading-relaxed">
+                    GRPO is a powerful and sample-efficient policy gradient algorithm. It works by generating a group of attempts (Traces) 
+                    for a single query and normalizing their rewards within that group. This creates a stable "relative advantage" signal 
+                    that guides the agent's learning, balancing exploration and exploitation effectively. It's an excellent default choice 
+                    for many tool-use tasks.
+                  </p>
+                </div>
               </div>
-
+              
               <div>
-                <h3 className="text-xl font-semibold text-green-400 mb-3">Algorithm Comparison Experiment</h3>
-                <CodeBlock language="python">
-{`def compare_algorithms(agent, dataset, algorithms=["SFT", "DPO", "GRPO"]):
-    """Compare different algorithms on the same task."""
-    
-    results = {}
-    
-    for algorithm in algorithms:
-        print(f"Training with {algorithm}...")
-        
-        brain = Brain(
-            agent=agent.copy(),  # Fresh copy for each algorithm
-            learning_algorithm=algorithm,
-            reward_func=get_reward_for_algorithm(algorithm),
-            max_steps=1000
-        )
-        
-        # Train and evaluate
-        brain.train(dataset=dataset)
-        evaluation = brain.evaluate(test_dataset)
-        
-        results[algorithm] = {
-            'accuracy': evaluation.accuracy,
-            'efficiency': evaluation.efficiency,
-            'quality': evaluation.quality_score,
-            'training_time': evaluation.training_time
-        }
-    
-    # Print comparison
-    print("\\nAlgorithm Comparison Results:")
-    for alg, metrics in results.items():
-        print(f"{alg:>6}: Acc={metrics['accuracy']:.3f}, "
-              f"Eff={metrics['efficiency']:.3f}, "
-              f"Qual={metrics['quality']:.3f}")
-    
-    return results
-
-def get_reward_for_algorithm(algorithm):
-    """Select appropriate reward function for algorithm."""
-    if algorithm == "DPO":
-        return reward_llm_judge_via_ranking
-    elif algorithm == "GRPO": 
-        return task_specific_reward
-    else:  # SFT
-        return None  # Uses supervised loss`}
+                <h4 className="text-lg font-bold text-[#3FB950] mb-4 flex items-center gap-2">
+                  <span className="text-xl">💡</span>
+                  Usage Example
+                </h4>
+                <CodeBlock language="python" filename="grpo_example.py">
+                  {grpoCode}
                 </CodeBlock>
               </div>
             </div>
           </div>
-        </section>
+
+          {/* 2. DPO */}
+          <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-8">
+            <div className="grid lg:grid-cols-2 gap-8 items-start">
+              <div>
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="text-4xl">⚖️</div>
+                  <div>
+                    <h2 className="text-3xl font-bold text-[#7C3AED] mb-2">
+                      DPO
+                    </h2>
+                    <p className="text-xl text-gray-300">Direct Preference Optimization</p>
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <div className="bg-[#7C3AED]/10 border border-[#7C3AED]/30 rounded-lg p-4 mb-4">
+                    <p className="text-[#7C3AED] font-semibold mb-2">🎯 Best for:</p>
+                    <p className="text-gray-300">Scenarios with preference-based or comparative feedback (like an LLM-as-a-Judge).</p>
+                  </div>
+                  
+                  <p className="text-gray-300 leading-relaxed">
+                    DPO is a simpler and often more stable alternative to traditional RLHF pipelines. It learns directly from preference pairs 
+                    (chosen vs. rejected examples). ToolBrain seamlessly integrates DPO with our ranking-based LLM-as-a-Judge, which automatically 
+                    generates these preference pairs by ranking multiple agent attempts.
+                  </p>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="text-lg font-bold text-[#3FB950] mb-4 flex items-center gap-2">
+                  <span className="text-xl">💡</span>
+                  Usage Example
+                </h4>
+                <CodeBlock language="python" filename="dpo_example.py">
+                  {dpoCode}
+                </CodeBlock>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. Supervised Learning / Distillation */}
+          <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-8">
+            <div className="grid lg:grid-cols-2 gap-8 items-start">
+              <div>
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="text-4xl">🎓</div>
+                  <div>
+                    <h2 className="text-3xl font-bold text-[#3FB950] mb-2">
+                      Supervised Learning / Distillation
+                    </h2>
+                    <p className="text-xl text-gray-300">Knowledge Transfer</p>
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <div className="bg-[#3FB950]/10 border border-[#3FB950]/30 rounded-lg p-4 mb-4">
+                    <p className="text-[#3FB950] font-semibold mb-2">🎯 Best for:</p>
+                    <p className="text-gray-300">Pre-training, knowledge transfer, or when you have a dataset of "expert" examples.</p>
+                  </div>
+                  
+                  <p className="text-gray-300 leading-relaxed">
+                    ToolBrain also supports standard supervised fine-tuning. This is the core mechanism behind our Knowledge Distillation feature, 
+                    where the Brain uses a powerful "teacher" model to generate high-quality Execution Traces. The "student" agent then learns from 
+                    these expert demonstrations via a supervised loss before starting any RL training.
+                  </p>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="text-lg font-bold text-[#3FB950] mb-4 flex items-center gap-2">
+                  <span className="text-xl">💡</span>
+                  Distillation Example
+                </h4>
+                <CodeBlock language="python" filename="distillation_example.py">
+                  {distillationCode}
+                </CodeBlock>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Algorithm Comparison Table */}
+        <div className="mt-20 mb-16">
+          <h2 className="text-3xl font-bold text-[#E6EDF3] text-center mb-8">
+            Algorithm Comparison Guide
+          </h2>
+          
+          <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-[#0D1117] border-b border-[#30363D]">
+                    <th className="text-left p-6 text-[#E6EDF3] font-bold">Algorithm</th>
+                    <th className="text-left p-6 text-[#E6EDF3] font-bold">Best Use Case</th>
+                    <th className="text-left p-6 text-[#E6EDF3] font-bold">Reward Type</th>
+                    <th className="text-left p-6 text-[#E6EDF3] font-bold">Sample Efficiency</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-[#30363D]/50 hover:bg-[#58A6FF]/5">
+                    <td className="p-6">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">📊</span>
+                        <div>
+                          <div className="font-bold text-[#58A6FF]">GRPO</div>
+                          <div className="text-sm text-gray-400">Policy Gradient</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-6 text-gray-300">Clear, objective tasks</td>
+                    <td className="p-6 text-gray-300">Scalar rewards</td>
+                    <td className="p-6">
+                      <span className="bg-[#3FB950]/20 text-[#3FB950] px-3 py-1 rounded-full text-sm font-medium">High</span>
+                    </td>
+                  </tr>
+                  <tr className="border-b border-[#30363D]/50 hover:bg-[#7C3AED]/5">
+                    <td className="p-6">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">⚖️</span>
+                        <div>
+                          <div className="font-bold text-[#7C3AED]">DPO</div>
+                          <div className="text-sm text-gray-400">Preference Learning</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-6 text-gray-300">Subjective, semantic tasks</td>
+                    <td className="p-6 text-gray-300">Preference pairs</td>
+                    <td className="p-6">
+                      <span className="bg-[#58A6FF]/20 text-[#58A6FF] px-3 py-1 rounded-full text-sm font-medium">Medium</span>
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-[#3FB950]/5">
+                    <td className="p-6">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">🎓</span>
+                        <div>
+                          <div className="font-bold text-[#3FB950]">Distillation</div>
+                          <div className="text-sm text-gray-400">Supervised Learning</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-6 text-gray-300">Knowledge transfer, pre-training</td>
+                    <td className="p-6 text-gray-300">Expert demonstrations</td>
+                    <td className="p-6">
+                      <span className="bg-[#3FB950]/20 text-[#3FB950] px-3 py-1 rounded-full text-sm font-medium">Very High</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {/* CALL TO ACTION */}
+        <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-12 text-center">
+          <h2 className="text-3xl font-bold text-[#E6EDF3] mb-6">
+            Ready to Experiment with Different Algorithms?
+          </h2>
+          <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+            Start with GRPO for most tasks, try DPO for subjective evaluation, or use Distillation to bootstrap your training.
+          </p>
+          
+          <a 
+            href="/key-features"
+            className="inline-block bg-[#58A6FF] hover:bg-[#4A90E2] text-white px-10 py-4 rounded-lg text-lg font-semibold transition-colors duration-200 shadow-lg hover:shadow-xl"
+          >
+            Explore More Features
+          </a>
+        </div>
       </div>
     </Layout>
   );

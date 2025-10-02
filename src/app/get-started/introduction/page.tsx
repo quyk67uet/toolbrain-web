@@ -1,17 +1,14 @@
 'use client';
 
 import Layout from '@/components/Layout';
-import { useState, useEffect, useRef } from 'react';
+import CodeBlock from '@/components/CodeBlock';
+import { useState, useEffect } from 'react';
 import Image from "next/image";
 
 export default function Introduction() {
   const [logoHovered, setLogoHovered] = useState(false);
   const [typedText, setTypedText] = useState('');
   const [showCursor, setShowCursor] = useState(true);
-  const [visibleCards, setVisibleCards] = useState(new Set());
-  
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   
   const fullText = 'Reinforcement Learning for Agents.\nMade Simple.';
 
@@ -30,73 +27,46 @@ export default function Introduction() {
 
     return () => clearInterval(typing);
   }, []);
-
-  // Intersection Observer for scroll animations
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const cardIndex = parseInt((entry.target as HTMLElement).dataset.cardIndex || '0');
-            setVisibleCards(prev => new Set([...prev, cardIndex]));
-          }
-        });
-      },
-      {
-        threshold: 0.3,
-        rootMargin: '0px 0px -100px 0px'
-      }
-    );
-
-    cardRefs.current.forEach((ref) => {
-      if (ref) observer.observe(ref);
-    });
-
-    return () => observer.disconnect();
-  }, []);
   
-  const challenges = [
-    {
-      title: 'High Barrier to Entry',
-      description: 'Complex frameworks & steep learning curves'
-    },
-    {
-      title: 'Difficult Reward Design',
-      description: 'Manual effort is slow and automated judges are inflexible'
-    },
-    {
-      title: 'Overwhelming Tool Choice',
-      description: 'Agents get lost when provided with too many tools'
-    },
-    {
-      title: 'High Computational Cost',
-      description: 'Training large, capable models is too expensive'
+  const scrollToQuickstart = () => {
+    const quickstartSection = document.getElementById('quickstart-section');
+    if (quickstartSection) {
+      quickstartSection.scrollIntoView({ behavior: 'smooth' });
     }
-  ];
+  };
 
-  const solutions = [
-    {
-      title: 'Unified API & Architecture',
-      description: 'A minimalist Brain API that abstracts away all RL complexity'
-    },
-    {
-      title: 'Flexible, Hybrid Rewards',
-      description: 'Seamlessly combine custom code with our powerful LLM-as-a-Judge'
-    },
-    {
-      title: 'Intelligent Tool Retrieval',
-      description: 'Automatically selects only the most relevant tools for the agent'
-    },
-    {
-      title: 'Efficient & Accessible Training',
-      description: 'Integrated Unsloth & QLoRA make training large models practical'
-    }
-  ];
+  const quickstartCode = `# 1. Imports and Component Definition
+from toolbrain import Brain
+from toolbrain.rewards import reward_exact_match
+from smolagents import CodeAgent, TransformersModel, tool
+
+@tool
+def multiply(a: int, b: int) -> int:
+    """Multiplies two integers."""
+    return a * b
+
+# Define a standard agent (CPU-compatible)
+model = TransformersModel("Qwen/Qwen2.5-0.5B-Instruct", max_new_tokens=128)
+agent = CodeAgent(model=model, tools=[multiply], max_steps=1)
+
+# 2. Initialize the Brain with your agent and a built-in reward
+brain = Brain(
+    agent=agent,
+    reward_func=reward_exact_match,
+    learning_algorithm="GRPO"
+)
+
+# 3. Define a task and start training!
+dataset = [{"query": "What is 8 multiplied by 7?", "gold_answer": "56"}]
+brain.train(dataset, num_iterations=10)
+
+# 4. Save your trained agent
+brain.save("./my_first_trained_agent")`;
 
   return (
     <Layout>
       <div className="max-w-6xl mx-auto">
-        {/* SECTION 1: HERO SECTION */}
+        {/* PHẦN 1: HERO SECTION */}
         <div className="text-center mb-20">
           <div 
             className={`inline-block mb-8 transition-transform duration-300 ${logoHovered ? 'scale-110' : ''}`}
@@ -108,6 +78,7 @@ export default function Introduction() {
             </div>
           </div>
           
+          {/* Tiêu đề Lớn */}
           <h1 className="text-4xl md:text-5xl font-bold text-[#E6EDF3] mb-6 leading-tight min-h-[140px] flex items-center justify-center">
             <span>
               {typedText.split('\n').map((line, index) => (
@@ -123,22 +94,23 @@ export default function Introduction() {
             </span>
           </h1>
           
+          {/* Dòng phụ */}
           <p className="text-xl text-gray-400 mb-10 max-w-3xl mx-auto leading-relaxed">
             ToolBrain is a lightweight framework that lets you train your existing tool-using agents with RL, 
             using a powerful and intuitive API.
           </p>
 
-          {/* Primary CTA */}
+          {/* Nút chính (Primary Button) */}
           <div className="mb-8">
-            <a 
-              href="/get-started/quickstart"
+            <button 
+              onClick={scrollToQuickstart}
               className="inline-block bg-[#58A6FF] hover:bg-[#4A90E2] text-white px-10 py-4 rounded-lg text-lg font-semibold transition-colors duration-200 shadow-lg hover:shadow-xl"
             >
-              Get Started
-            </a>
+              Get Started Below
+            </button>
           </div>
 
-          {/* Secondary CTAs */}
+          {/* Các nút phụ (Secondary Buttons) */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               href="https://github.com/toolbrain/toolbrain" 
@@ -184,103 +156,89 @@ export default function Introduction() {
           </div>
         </div>
 
-        {/* SECTION 2: PROBLEM-SOLUTION SECTION */}
-        <div className="mb-20" ref={sectionRef}>
-          <h2 className="text-4xl font-bold text-[#E6EDF3] text-center mb-16">
-            Common Challenges & Our Solutions
+        {/* PHẦN 2: QUICKSTART - "NGÔI SAO" CỦA TRANG */}
+        <div id="quickstart-section" className="mb-20">
+          <h2 className="text-4xl font-bold text-[#E6EDF3] text-center mb-6">
+            Get Started in Minutes
           </h2>
           
-          {/* Individual Problem-Solution Pairs */}
-          <div className="space-y-12">
-            {challenges.map((challenge, index) => (
-              <div 
-                key={index}
-                className="relative grid lg:grid-cols-2 gap-8 lg:gap-16 items-center"
-              >
-                {/* Problem Card */}
-                <div 
-                  ref={el => { cardRefs.current[index * 2] = el; }}
-                  data-card-index={index * 2}
-                  className={`transform transition-all duration-700 ease-out ${
-                    visibleCards.has(index * 2) 
-                      ? 'translate-x-0 opacity-100' 
-                      : '-translate-x-12 opacity-0'
-                  }`}
-                  style={{ transitionDelay: `${index * 200}ms` }}
-                >
-                  <div className="relative">
-                    <div className="absolute -top-4 -left-4 w-8 h-8 bg-[#F85149] rounded-full flex items-center justify-center text-white font-bold text-sm">
-                      {index + 1}
-                    </div>
-                    <div className="bg-[#2D1B1B] border border-[#F85149]/30 rounded-lg p-6 hover:border-[#F85149]/50 transition-all duration-300 hover:transform hover:scale-105">
-                      <div className="flex items-start gap-3 mb-3">
-                        <div className="text-2xl">❌</div>
-                        <h4 className="text-lg font-semibold text-[#F85149]">
-                          {challenge.title}
-                        </h4>
-                      </div>
-                      <p className="text-gray-300 leading-relaxed pl-11">
-                        {challenge.description}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+          <p className="text-xl text-gray-400 mb-10 max-w-4xl mx-auto text-center leading-relaxed">
+            We believe in "show, don't tell". The code below is a complete, runnable example. 
+            It trains a simple agent to use a multiply tool. Copy, paste, and run it to see ToolBrain in action.
+          </p>
 
-                {/* Connecting Arrow */}
-                <div className="hidden lg:flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
-                  <div className="flex items-center">
-                    <div className="w-8 h-0.5 bg-gradient-to-r from-[#F85149] to-[#3FB950]"></div>
-                    <div className="w-0 h-0 border-l-[8px] border-l-[#3FB950] border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent ml-1"></div>
-                  </div>
-                </div>
-
-                {/* Solution Card */}
-                <div 
-                  ref={el => { cardRefs.current[index * 2 + 1] = el; }}
-                  data-card-index={index * 2 + 1}
-                  className={`transform transition-all duration-700 ease-out ${
-                    visibleCards.has(index * 2 + 1) 
-                      ? 'translate-x-0 opacity-100' 
-                      : 'translate-x-12 opacity-0'
-                  }`}
-                  style={{ transitionDelay: `${index * 200 + 400}ms` }}
-                >
-                  <div className="relative">
-                    <div className="absolute -top-4 -right-4 w-8 h-8 bg-[#3FB950] rounded-full flex items-center justify-center text-white font-bold text-sm">
-                      {index + 1}
-                    </div>
-                    <div className="bg-[#1B2D1B] border border-[#3FB950]/30 rounded-lg p-6 hover:border-[#3FB950]/50 transition-all duration-300 hover:transform hover:scale-105">
-                      <div className="flex items-start gap-3 mb-3">
-                        <div className="text-2xl">✅</div>
-                        <h4 className="text-lg font-semibold text-[#3FB950]">
-                          {solutions[index].title}
-                        </h4>
-                      </div>
-                      <p className="text-gray-300 leading-relaxed pl-11">
-                        {solutions[index].description}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="max-w-4xl mx-auto">
+            <CodeBlock language="python" filename="quickstart_example.py">
+              {quickstartCode}
+            </CodeBlock>
           </div>
         </div>
 
-        {/* SECTION 3: FINAL CALL TO ACTION */}
+        {/* PHẦN 3: "WHAT'S UNDER THE HOOD?" */}
+        <div className="mb-20">
+          <h2 className="text-4xl font-bold text-[#E6EDF3] text-center mb-6">
+            The Power Behind the Simplicity
+          </h2>
+          
+          {/* Grid 2x2 */}
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Ô 1: Unified API & Architecture */}
+            <div className="bg-gradient-to-br from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-8 hover:border-[#58A6FF]/50 transition-all duration-300 hover:transform hover:scale-105">
+              <div className="text-3xl mb-4">🧠</div>
+              <h3 className="text-xl font-bold text-[#58A6FF] mb-4">
+                Unified API & Architecture
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                The Brain class abstracts away the entire RL loop. You focus on your agent, we handle the training.
+              </p>
+            </div>
+
+            {/* Ô 2: Flexible, Hybrid Rewards */}
+            <div className="bg-gradient-to-br from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-8 hover:border-[#58A6FF]/50 transition-all duration-300 hover:transform hover:scale-105">
+              <div className="text-3xl mb-4">🎯</div>
+              <h3 className="text-xl font-bold text-[#58A6FF] mb-4">
+                Flexible, Hybrid Rewards
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Use our built-in rewards like reward_exact_match, write your own Python functions, or leverage our powerful LLM-as-a-Judge.
+              </p>
+            </div>
+
+            {/* Ô 3: Intelligent Tool & Data Management */}
+            <div className="bg-gradient-to-br from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-8 hover:border-[#58A6FF]/50 transition-all duration-300 hover:transform hover:scale-105">
+              <div className="text-3xl mb-4">🔧</div>
+              <h3 className="text-xl font-bold text-[#58A6FF] mb-4">
+                Intelligent Tool & Data Management
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Automatically select relevant tools with Tool Retrieval and generate new training tasks with Zero-Learn.
+              </p>
+            </div>
+
+            {/* Ô 4: Efficient & Advanced Training */}
+            <div className="bg-gradient-to-br from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-8 hover:border-[#58A6FF]/50 transition-all duration-300 hover:transform hover:scale-105">
+              <div className="text-3xl mb-4">⚡</div>
+              <h3 className="text-xl font-bold text-[#58A6FF] mb-4">
+                Efficient & Advanced Training
+              </h3>
+              <p className="text-gray-400 leading-relaxed">
+                Out-of-the-box support for GRPO, DPO, and Knowledge Distillation, all accelerated by Unsloth and QLoRA.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Call to Action cuối cùng */}
         <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-12 text-center">
           <h2 className="text-3xl font-bold text-[#E6EDF3] mb-6">
-            Ready to Build Smarter Agents?
+            Ready to dive deeper?
           </h2>
-          <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-            Follow our Quickstart guide and train your first agent in less than 5 minutes.
-          </p>
           
           <a 
-            href="/get-started/quickstart"
+            href="/key-features/unified-api"
             className="inline-block bg-[#58A6FF] hover:bg-[#4A90E2] text-white px-10 py-4 rounded-lg text-lg font-semibold transition-colors duration-200 shadow-lg hover:shadow-xl"
           >
-            Start the Quickstart Guide
+            Explore Full Documentation
           </a>
         </div>
       </div>

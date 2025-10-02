@@ -2,334 +2,320 @@
 
 import Layout from '@/components/Layout';
 import CodeBlock from '@/components/CodeBlock';
+import Image from 'next/image';
 
 export default function UnifiedAPI() {
-  return (
-    <Layout>
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">Guide: The Unified API & 'Coach-Athlete' Architecture</h1>
-          <p className="text-gray-300 text-lg">
-            Understanding ToolBrain's core design philosophy and unified API that makes training intelligent agents simple and consistent.
-          </p>
-        </div>
+  const basicCode = `from toolbrain import Brain, reward_exact_match
+from smolagents import CodeAgent, TransformersModel
 
-        {/* Architecture Overview */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">The 'Coach-Athlete' Architecture</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              ToolBrain implements a 'Coach-Athlete' paradigm where the <strong>Brain</strong> acts as an intelligent coach 
-              that trains and optimizes <strong>Agent</strong> athletes. This separation of concerns creates a clean, 
-              extensible architecture.
-            </p>
-            
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <div className="bg-blue-900/20 border border-blue-600 rounded-lg p-4">
-                <h3 className="text-xl font-semibold text-blue-400 mb-3">🧠 The Brain (Coach)</h3>
-                <ul className="text-blue-200 text-sm space-y-2">
-                  <li>• Central orchestrator and trainer</li>
-                  <li>• Manages training loops and optimization</li>
-                  <li>• Handles reward engineering</li>
-                  <li>• Coordinates tool retrieval</li>
-                  <li>• Generates training examples</li>
-                </ul>
-              </div>
-              
-              <div className="bg-green-900/20 border border-green-600 rounded-lg p-4">
-                <h3 className="text-xl font-semibold text-green-400 mb-3">🤖 The Agent (Athlete)</h3>
-                <ul className="text-green-200 text-sm space-y-2">
-                  <li>• Executes tasks and learns</li>
-                  <li>• Interacts with tools and environment</li>
-                  <li>• Generates responses and actions</li>
-                  <li>• Adapts based on feedback</li>
-                  <li>• Focuses on task execution</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
+# 1. Define your agent and reward function
+agent = CodeAgent(model=TransformersModel("Qwen/3B"), tools=[...])
+reward_func = reward_exact_match
 
-        {/* The Brain API */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">The Brain API: Central Orchestrator</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              The <code className="bg-gray-700 px-2 py-1 rounded">Brain</code> class serves as the central orchestrator, 
-              providing a unified interface for all training operations. Here's the core <code className="bg-gray-700 px-2 py-1 rounded">__init__</code> method:
-            </p>
-            
-            <CodeBlock language="python">
-{`class Brain:
-    def __init__(
-        self,
-        agent,
-        reward_func=None,
-        enable_tool_retrieval=False,
-        learning_algorithm="GRPO",
-        batch_size=32,
-        learning_rate=1e-4,
-        **kwargs
-    ):
-        """
-        Initialize the Brain for agent training.
-        
-        Args:
-            agent: The agent to train (CodeAgent, ReActAgent, etc.)
-            reward_func: Function to compute rewards for agent actions
-            enable_tool_retrieval: Whether to enable intelligent tool retrieval
-            learning_algorithm: Training algorithm ("GRPO", "DPO", "SFT")
-            batch_size: Training batch size
-            learning_rate: Learning rate for optimization
-        """
-        self.agent = agent
-        self.reward_func = reward_func
-        self.enable_tool_retrieval = enable_tool_retrieval
-        self.learning_algorithm = learning_algorithm
-        self.max_steps = max_steps
-        self.batch_size = batch_size
-        self.learning_rate = learning_rate
-        `}
-            </CodeBlock>
+# 2. Initialize the Brain and train
+brain = Brain(agent=agent, reward_func=reward_func)
+brain.train(dataset=[{"query": "...", "gold_answer": "..."}])`;
 
-            <div className="mt-6">
-              <h3 className="text-xl font-semibold text-blue-400 mb-3">Key Parameters Explained</h3>
-              <div className="space-y-4">
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <h4 className="font-semibold text-green-400 mb-2">agent</h4>
-                  <p className="text-gray-300 text-sm">
-                    The agent instance to be trained. Can be any agent type (CodeAgent, ReActAgent, etc.). 
-                    The Brain automatically adapts to different agent architectures.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <h4 className="font-semibold text-green-400 mb-2">reward_func</h4>
-                  <p className="text-gray-300 text-sm">
-                    Function to evaluate agent performance. Can be user-defined functions or LLM-as-a-judge. 
-                    If None, uses environment rewards.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <h4 className="font-semibold text-green-400 mb-2">enable_tool_retrieval</h4>
-                  <p className="text-gray-300 text-sm">
-                    When True, automatically retrieves relevant tools for each task, solving the "too many tools" problem.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <h4 className="font-semibold text-green-400 mb-2">learning_algorithm</h4>
-                  <p className="text-gray-300 text-sm">
-                    Training algorithm to use. Supports "GRPO" (Generalized RPO), "DPO" (Direct Preference Optimization), 
-                    and "SFT" (Supervised Fine-Tuning).
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+  const advancedCode = `# The Brain orchestrates all key features through one API
 
-        {/* The Agent Adapter Pattern */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">The Agent Adapter Pattern</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              ToolBrain uses the Adapter Pattern to seamlessly work with different agent types. The Brain automatically 
-              detects the agent type and applies the appropriate adapter for training.
-            </p>
-            
-            <CodeBlock language="python">
-{`def _get_adapter_for_agent(self, agent):
-    """
-    Automatically select the appropriate adapter for the given agent.
-    
-    Args:
-        agent: The agent instance
-        
-    Returns:
-        Adapter: The appropriate adapter for this agent type
-    """
-    if isinstance(agent, CodeAgent):
-        return CodeAgentAdapter(agent)
-    elif isinstance(agent, ReActAgent):
-        return ReActAgentAdapter(agent)
-    elif isinstance(agent, ConversationalAgent):
-        return ConversationalAgentAdapter(agent)
-    elif hasattr(agent, 'generate'):
-        # Generic LLM-based agent
-        return GenericLLMAdapter(agent)
-    else:
-        raise ValueError(f"Unsupported agent type: {type(agent)}")
-        
-# Usage in Brain initialization
-def __init__(self, agent, **kwargs):
-    self.agent = agent
-    self.adapter = self._get_adapter_for_agent(agent)
-    # The adapter handles agent-specific training logic`}
-            </CodeBlock>
+# 1. Define advanced components
+reward_func = reward_llm_judge_via_ranking
+retriever = ToolRetriever(tools=all_available_tools)
+agent = CodeAgent(model="Qwen/3B", tools=[]) # Tools will be handled by Brain
 
-            <div className="mt-6">
-              <h3 className="text-xl font-semibold text-blue-400 mb-3">Supported Agent Types</h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <h4 className="font-semibold text-purple-400 mb-2">CodeAgent</h4>
-                  <p className="text-gray-300 text-sm">
-                    Specialized for code generation tasks. Handles tool usage, code execution, and debugging workflows.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <h4 className="font-semibold text-purple-400 mb-2">ReActAgent</h4>
-                  <p className="text-gray-300 text-sm">
-                    Implements Reasoning + Acting paradigm. Alternates between reasoning and action steps.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <h4 className="font-semibold text-purple-400 mb-2">ConversationalAgent</h4>
-                  <p className="text-gray-300 text-sm">
-                    Optimized for dialogue and conversation tasks. Handles context and multi-turn interactions.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <h4 className="font-semibold text-purple-400 mb-2">Generic LLM</h4>
-                  <p className="text-gray-300 text-sm">
-                    Fallback adapter for any agent with a 'generate' method. Provides basic training capabilities.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Unified Workflow */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Unified Training Workflow</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              Regardless of the agent type, ToolBrain provides a consistent training workflow through the unified API:
-            </p>
-            
-            <CodeBlock language="python">
-{`# 1. Initialize any agent type
-code_agent = CodeAgent(model="Qwen/3B-Instruct", tools=finance_tools)
-react_agent = ReActAgent(model="Llama-3-8B", tools=search_tools)
-chat_agent = ConversationalAgent(model="Mistral-7B")
-
-# 2. Create Brain with unified API - same for all agent types
-brain_code = Brain(
-    agent=code_agent,
-    reward_func=finance_reward,
-    enable_tool_retrieval=True,
-    learning_algorithm="GRPO"
-)
-
-brain_react = Brain(
-    agent=react_agent,
-    reward_func=search_reward,
-    enable_tool_retrieval=True,
+# 2. Configure the Brain with all components and strategies
+brain = Brain(
+    agent=agent, 
+    reward_func=reward_func,
+    tool_retriever=retriever, 
     learning_algorithm="DPO"
 )
 
-brain_chat = Brain(
-    agent=chat_agent,
-    reward_func=conversation_reward,
-    learning_algorithm="SFT"
-)
+# 3. Use advanced features to prepare and execute training
+training_tasks = brain.generate_training_examples("Master finance APIs")
+brain.distill(dataset=training_tasks, teacher_model_id="GPT-4-Turbo")
+brain.train(dataset=training_tasks)`;
 
-# 3. Same training interface for all
-for brain in [brain_code, brain_react, brain_chat]:
-    # Generate training data
-    training_data = brain.generate_training_examples(
-        task_description=f"Master the {brain.agent.__class__.__name__} tasks"
-    )
-    
-    # Optional: Knowledge distillation
-    brain.distill(dataset=training_data, teacher_model_id="GPT-4-Turbo")
-    
-    # Train the agent
-    brain.train(dataset=training_data)
-    
-    # Evaluate performance
-    results = brain.evaluate(test_dataset)`}
-            </CodeBlock>
+  return (
+    <Layout>
+      <div className="max-w-6xl mx-auto">
+        {/* HEADER SECTION */}
+        <div className="text-center mb-16">
+          <h1 className="text-5xl font-bold text-[#E6EDF3] mb-6">
+            Unified API & Architecture
+          </h1>
+          <p className="text-xl text-gray-400 max-w-4xl mx-auto leading-relaxed">
+            The heart of ToolBrain is the Brain class. It provides a single, unified API that handles 
+            the entire complex Reinforcement Learning workflow. At its simplest, training an agent 
+            takes just a few lines of code.
+          </p>
+        </div>
 
-            <div className="mt-6 p-4 bg-green-900/20 border border-green-600 rounded-lg">
-              <h4 className="font-semibold text-green-400 mb-2">🎯 Key Benefits</h4>
-              <ul className="text-green-200 text-sm space-y-1">
-                <li>• <strong>Consistency:</strong> Same API works across all agent types</li>
-                <li>• <strong>Flexibility:</strong> Easy to switch between different agents and algorithms</li>
-                <li>• <strong>Extensibility:</strong> Simple to add new agent types via adapters</li>
-                <li>• <strong>Maintainability:</strong> Centralized training logic in the Brain</li>
-              </ul>
+        {/* PHẦN 1: THE SIMPLE PATH */}
+        <div className="mb-20">
+          <h2 className="text-3xl font-bold text-[#E6EDF3] mb-6">
+            The Simple Path: A Basic Training Run
+          </h2>
+          <p className="text-lg text-gray-400 mb-8 leading-relaxed">
+            This example shows the minimal code required to train a standard smolagents.CodeAgent.
+          </p>
+          
+          <CodeBlock language="python" filename="basic_training.py">
+            {basicCode}
+          </CodeBlock>
+        </div>
+
+        {/* PHẦN 2: THE POWERFUL PATH */}
+        <div className="mb-20">
+          <h2 className="text-3xl font-bold text-[#E6EDF3] mb-6">
+            The Powerful Path: A Complete Workflow
+          </h2>
+          <p className="text-lg text-gray-400 mb-8 leading-relaxed">
+            Beyond the basics, the Brain API serves as a unified interface to orchestrate all of ToolBrain's 
+            advanced features. The conceptual code below demonstrates how you can combine multiple capabilities 
+            into a single, powerful workflow.
+          </p>
+          
+          <CodeBlock language="python" filename="advanced_workflow.py">
+            {advancedCode}
+          </CodeBlock>
+        </div>
+
+        {/* PHẦN 3: THE MAGIC BEHIND THE SCENES - AGENT ADAPTER */}
+        <div className="mb-20">
+          <h2 className="text-3xl font-bold text-[#E6EDF3] mb-6">
+            How It Works: The Agent Adapter
+          </h2>
+          <p className="text-lg text-gray-400 mb-8 leading-relaxed">
+            You might wonder how the Brain can work with different agent libraries like smolagents, 
+            LangChain, or LlamaIndex without requiring you to change your agent code. The magic is in 
+            the Agent Adapter.
+          </p>
+          <p className="text-lg text-gray-400 mb-12 leading-relaxed">
+            The Adapter is an internal component, automatically selected by the Brain, that acts as a 
+            universal translator. It wraps your agent, observes its actions, and translates its unique 
+            internal memory into a standardized Execution Trace that our RL algorithms can understand.
+          </p>
+
+          {/* VISUAL DIAGRAM */}
+          <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-16 mb-12 relative overflow-hidden">
+            {/* Background pattern */}
+            <div className="absolute inset-0 opacity-5">
+              <svg className="w-full h-full" viewBox="0 0 100 100">
+                <defs>
+                  <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" strokeWidth="0.5"/>
+                  </pattern>
+                </defs>
+                <rect width="100" height="100" fill="url(#grid)" />
+              </svg>
+            </div>
+
+            <div className="relative flex flex-col xl:flex-row items-center justify-center gap-12 xl:gap-16">
+              
+              {/* LEFT: Multiple Agent Frameworks */}
+              <div className="flex flex-col items-center">
+                <h3 className="text-2xl font-bold text-[#E6EDF3] mb-8 text-center">Different Agent Frameworks</h3>
+                
+                <div className="space-y-6">
+                  {/* SmolaAgents */}
+                  <div className="relative group">
+                    <div className="flex items-center gap-6 bg-gradient-to-r from-[#0D1117] to-[#1C2128] border-2 border-[#30363D] rounded-xl p-6 hover:border-[#F85149]/50 transition-all duration-300 hover:scale-105 min-w-[280px]">
+                      <Image src="/smolagents.png" alt="SmolaAgents" width={48} height={48} className="rounded-lg" />
+                      <div className="flex-1">
+                        <span className="text-[#E6EDF3] font-bold text-lg">smolagents</span>
+                        <div className="flex items-center gap-2 mt-2">
+                          <div className="flex space-x-1">
+                            <div className="w-3 h-3 bg-red-400 rounded-full animate-pulse"></div>
+                            <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                            <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                          </div>
+                          <span className="text-xs text-gray-400">Different protocols</span>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Connection line to adapter */}
+                    <div className="hidden xl:block absolute top-1/2 -right-8 w-8 h-0.5 bg-gradient-to-r from-[#F85149] to-[#58A6FF] transform -translate-y-1/2"></div>
+                  </div>
+                  
+                  {/* LangChain */}
+                  <div className="relative group">
+                    <div className="flex items-center gap-6 bg-gradient-to-r from-[#0D1117] to-[#1C2128] border-2 border-[#30363D] rounded-xl p-6 hover:border-[#7C3AED]/50 transition-all duration-300 hover:scale-105 min-w-[280px]">
+                      <Image src="/lang.png" alt="LangChain" width={48} height={48} className="rounded-lg" />
+                      <div className="flex-1">
+                        <span className="text-[#E6EDF3] font-bold text-lg">LangChain / LangGraph</span>
+                        <div className="flex items-center gap-2 mt-2">
+                          <div className="flex space-x-1">
+                            <div className="w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
+                            <div className="w-3 h-3 bg-purple-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                            <div className="w-3 h-3 bg-pink-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                          </div>
+                          <span className="text-xs text-gray-400">Different protocols</span>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Connection line to adapter */}
+                    <div className="hidden xl:block absolute top-1/2 -right-8 w-8 h-0.5 bg-gradient-to-r from-[#7C3AED] to-[#58A6FF] transform -translate-y-1/2"></div>
+                  </div>
+                  
+                  {/* LlamaIndex */}
+                  <div className="relative group">
+                    <div className="flex items-center gap-6 bg-gradient-to-r from-[#0D1117] to-[#1C2128] border-2 border-[#30363D] rounded-xl p-6 hover:border-[#3FB950]/50 transition-all duration-300 hover:scale-105 min-w-[280px]">
+                      <Image src="/llama.png" alt="LlamaIndex" width={48} height={48} className="rounded-lg" />
+                      <div className="flex-1">
+                        <span className="text-[#E6EDF3] font-bold text-lg">LlamaIndex</span>
+                        <div className="flex items-center gap-2 mt-2">
+                          <div className="flex space-x-1">
+                            <div className="w-3 h-3 bg-orange-400 rounded-full animate-pulse"></div>
+                            <div className="w-3 h-3 bg-teal-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                            <div className="w-3 h-3 bg-indigo-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                          </div>
+                          <span className="text-xs text-gray-400">Different protocols</span>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Connection line to adapter */}
+                    <div className="hidden xl:block absolute top-1/2 -right-8 w-8 h-0.5 bg-gradient-to-r from-[#3FB950] to-[#58A6FF] transform -translate-y-1/2"></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* MIDDLE: Adapter */}
+              <div className="relative flex flex-col items-center">
+                {/* Main Arrow (mobile) */}
+                <div className="xl:hidden mb-6">
+                  <svg className="w-12 h-16 text-[#58A6FF] animate-bounce" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M1 13.025l2.828-2.847 6.176 6.176v-16.354h3.992v16.354l6.176-6.176 2.828 2.847-11 10.975z"/>
+                  </svg>
+                </div>
+                
+                {/* Adapter Box */}
+                <div className="relative">
+                  {/* Glow effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#58A6FF]/30 to-[#7C3AED]/30 rounded-2xl blur-xl"></div>
+                  
+                  <div className="relative bg-gradient-to-br from-[#58A6FF]/20 to-[#7C3AED]/20 border-3 border-[#58A6FF] rounded-2xl p-8 backdrop-blur-sm">
+                    <div className="text-center">
+                      <div className="text-5xl mb-4 animate-spin-slow">🔄</div>
+                      <h4 className="text-2xl font-bold text-[#58A6FF] mb-2">ToolBrain</h4>
+                      <h4 className="text-2xl font-bold text-[#7C3AED]">Adapter</h4>
+                      <div className="mt-4 px-4 py-2 bg-[#0D1117] rounded-lg border border-[#30363D]">
+                        <p className="text-sm text-[#58A6FF] font-semibold">Universal</p>
+                        <p className="text-sm text-[#7C3AED] font-semibold">Translator</p>
+                      </div>
+                      <div className="mt-4 flex justify-center">
+                        <div className="w-4 h-4 bg-[#58A6FF] rounded-full animate-pulse"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Arrow to Brain (mobile) */}
+                <div className="xl:hidden mt-6">
+                  <svg className="w-12 h-16 text-[#58A6FF] animate-bounce" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M1 13.025l2.828-2.847 6.176 6.176v-16.354h3.992v16.354l6.176-6.176 2.828 2.847-11 10.975z"/>
+                  </svg>
+                </div>
+              </div>
+
+              {/* RIGHT: Unified ToolBrain */}
+              <div className="relative flex flex-col items-center">
+                <h3 className="text-2xl font-bold text-[#E6EDF3] mb-8 text-center">Unified Interface</h3>
+                
+                <div className="relative">
+                  {/* Glow effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#58A6FF]/40 to-[#3FB950]/40 rounded-2xl blur-2xl"></div>
+                  
+                  <div className="relative bg-gradient-to-br from-[#58A6FF]/15 to-[#3FB950]/15 border-3 border-[#58A6FF] rounded-2xl p-10 hover:scale-105 transition-all duration-300 min-w-[280px]">
+                    <div className="flex flex-col items-center space-y-6">
+                      <div className="relative">
+                        <Image src="/toolbrain.png" alt="ToolBrain" width={80} height={80} className="rounded-xl" />
+                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-[#3FB950] rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">✓</span>
+                        </div>
+                      </div>
+                      <h4 className="text-3xl font-bold text-[#58A6FF]">ToolBrain</h4>
+                      <div className="text-center bg-[#0D1117] rounded-lg px-4 py-3 border border-[#30363D] w-full">
+                        <p className="text-lg font-semibold text-[#3FB950]">Single Standardized</p>
+                        <p className="text-lg font-semibold text-[#58A6FF]">Brain API</p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <div className="w-3 h-3 bg-[#58A6FF] rounded-full animate-pulse"></div>
+                        <div className="w-3 h-3 bg-[#3FB950] rounded-full animate-pulse" style={{animationDelay: '0.3s'}}></div>
+                        <div className="w-3 h-3 bg-[#7C3AED] rounded-full animate-pulse" style={{animationDelay: '0.6s'}}></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Connection line from adapter */}
+                  <div className="hidden xl:block absolute top-1/2 -left-8 w-8 h-0.5 bg-gradient-to-r from-[#58A6FF] to-[#3FB950] transform -translate-y-1/2"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Animated background particles */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-[#58A6FF] rounded-full opacity-60 animate-ping"></div>
+              <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-[#7C3AED] rounded-full opacity-40 animate-ping" style={{animationDelay: '1s'}}></div>
+              <div className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-[#3FB950] rounded-full opacity-50 animate-ping" style={{animationDelay: '2s'}}></div>
             </div>
           </div>
-        </section>
 
-        {/* Real-World Example */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Real-World Example</h2>
-          <div className="bg-gray-800 rounded-lg p-6">
-            <p className="text-gray-300 mb-4">
-              Here's a complete example showing how the unified API handles different agent types seamlessly:
-            </p>
+          {/* SUPPORT & ROADMAP */}
+          <div className="bg-[#161B22] border border-[#30363D] rounded-lg p-8">
+            <h3 className="text-2xl font-bold text-[#E6EDF3] mb-6">
+              Current Support & Future Roadmap
+            </h3>
             
-            <CodeBlock language="python">
-{`from toolbrain import Brain
-from toolbrain.agents import CodeAgent, ReActAgent
-from toolbrain.rewards import reward_llm_judge_via_ranking
-
-# Define tools and rewards
-finance_tools = [get_stock_price, calculate_portfolio, risk_analysis]
-research_tools = [web_search, academic_search, summarize_paper]
-
-# Create different agent types
-code_agent = CodeAgent(
-    model="Qwen/3B-Instruct",
-    tools=finance_tools
-)
-
-research_agent = ReActAgent(
-    model="Llama-3-8B", 
-    tools=research_tools
-)
-
-# Use the same Brain API for both
-brains = []
-for agent, task_desc in [
-    (code_agent, "Master financial analysis and portfolio management"),
-    (research_agent, "Conduct comprehensive market research")
-]:
-    brain = Brain(
-        agent=agent,
-        reward_func=reward_llm_judge_via_ranking,
-        enable_tool_retrieval=True,
-        learning_algorithm="GRPO",
-        max_steps=1000
-    )
-    
-    # Same workflow regardless of agent type
-    training_data = brain.generate_training_examples(task_description=task_desc)
-    brain.distill(dataset=training_data, teacher_model_id="GPT-4-Turbo")
-    brain.train(dataset=training_data)
-    
-    brains.append(brain)
-
-print("Both agents trained successfully with the same unified API!")`}
-            </CodeBlock>
-
-            <div className="mt-6 p-4 bg-blue-900/20 border border-blue-600 rounded-lg">
-              <h4 className="font-semibold text-blue-400 mb-2">🚀 The Power of Unified API</h4>
-              <p className="text-blue-200 text-sm">
-                This example demonstrates how ToolBrain's unified API allows you to train completely different types of agents 
-                (CodeAgent vs ReActAgent) using identical code patterns. The Brain handles all the complexity of adapting 
-                to different agent architectures behind the scenes.
-              </p>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h4 className="text-lg font-semibold text-[#3FB950] mb-4 flex items-center gap-2">
+                  <span className="text-xl">✅</span>
+                  Currently Supported
+                </h4>
+                <ul className="space-y-2 text-gray-300">
+                  <li className="flex items-center gap-3">
+                    <Image src="/smolagents.png" alt="SmolaAgents" width={20} height={20} className="rounded" />
+                    smolagents
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Image src="/lang.png" alt="LangChain" width={20} height={20} className="rounded" />
+                    LangChain / LangGraph
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Image src="/llama.png" alt="LlamaIndex" width={20} height={20} className="rounded" />
+                    LlamaIndex
+                  </li>
+                </ul>
+              </div>
+              
+              <div>
+                <h4 className="text-lg font-semibold text-[#58A6FF] mb-4 flex items-center gap-2">
+                  <span className="text-xl">🚀</span>
+                  Coming Soon
+                </h4>
+                <ul className="space-y-2 text-gray-300">
+                  <li className="flex items-center gap-3">
+                    <Image src="/autogen.jpg" alt="AutoGen" width={20} height={20} className="rounded" />
+                    AutoGen
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Image src="/crew.png" alt="CrewAI" width={20} height={20} className="rounded" />
+                    CrewAI
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="w-5 h-5 bg-gradient-to-r from-green-400 to-blue-400 rounded flex items-center justify-center text-xs font-bold text-white">+</div>
+                    Custom Adapters
+                  </li>
+                </ul>
+              </div>
             </div>
+            
+            <p className="text-gray-400 mt-6 text-sm leading-relaxed">
+              The modular design also allows advanced users to easily create adapters for their own custom agents.
+            </p>
           </div>
-        </section>
+        </div>
       </div>
     </Layout>
   );

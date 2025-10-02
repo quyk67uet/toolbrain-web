@@ -17,37 +17,37 @@ export default function ExecutionTrace() {
 
         {/* The Problem */}
         <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">The Problem: "Garbage In, Garbage Out" in RL</h2>
+          <h2 className="text-3xl font-semibold text-white mb-6">The Foundation: Understanding Data Quality in RL</h2>
           <div className="bg-gray-800 rounded-lg p-6 mb-6">
             <p className="text-gray-300 mb-4">
-              In reinforcement learning, there&apos;s a fundamental principle that determines the quality of your trained models: 
-              <strong className="text-red-400"> the quality of RL training is entirely dependent on the quality of the data it learns from</strong>.
+              In reinforcement learning, there's a fundamental principle that determines the quality of your trained models: 
+              <strong className="text-[#58A6FF]"> the quality of RL training is entirely dependent on the quality of the data it learns from</strong>.
             </p>
 
-            <div className="bg-red-900/20 border border-red-600 rounded-lg p-6 mb-6">
-              <h3 className="text-xl font-semibold text-red-400 mb-4">❌ The Data Quality Crisis</h3>
-              <p className="text-red-200 mb-4">
-                Many agent systems suffer from a critical flaw: they only log the final, parsed actions, 
-                losing crucial information about what the model actually saw and said. This creates a cascade of problems:
+            <div className="bg-gradient-to-br from-[#58A6FF]/10 to-[#4A90E2]/10 border border-[#58A6FF]/30 rounded-lg p-6 mb-6">
+              <h3 className="text-xl font-semibold text-[#58A6FF] mb-4">📊 The Data Quality Challenge</h3>
+              <p className="text-gray-300 mb-4">
+                Many agent systems capture only the final, parsed actions, missing crucial information about 
+                what the model actually saw and said. This incomplete data creates training challenges:
               </p>
               
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="font-semibold text-red-300 mb-2">🗑️ Information Loss</h4>
-                  <ul className="text-red-200 text-sm space-y-1">
-                    <li>• Raw model outputs are discarded</li>
-                    <li>• Parsing errors hide model behavior</li>
-                    <li>• Context information is lost</li>
-                    <li>• Tool outputs are simplified or omitted</li>
+                  <h4 className="font-semibold text-[#58A6FF] mb-2">� Information Gaps</h4>
+                  <ul className="text-gray-300 text-sm space-y-1">
+                    <li>• Raw model outputs are simplified</li>
+                    <li>• Parsing details are abstracted away</li>
+                    <li>• Context information gets condensed</li>
+                    <li>• Tool execution details are reduced</li>
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-red-300 mb-2">⚠️ Training Problems</h4>
-                  <ul className="text-red-200 text-sm space-y-1">
-                    <li>• Incorrect loss calculations</li>
-                    <li>• Noisy training signals</li>
-                    <li>• Poor convergence</li>
-                    <li>• Unreliable reward computation</li>
+                  <h4 className="font-semibold text-[#58A6FF] mb-2">🎯 Training Opportunities</h4>
+                  <ul className="text-gray-300 text-sm space-y-1">
+                    <li>• More precise loss calculations</li>
+                    <li>• Cleaner training signals</li>
+                    <li>• Better convergence patterns</li>
+                    <li>• Enhanced reward computation</li>
                   </ul>
                 </div>
               </div>
@@ -60,8 +60,8 @@ export default function ExecutionTrace() {
               </p>
               
               <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-red-900/30 border border-red-700 rounded p-3">
-                  <h5 className="text-red-400 font-semibold text-sm mb-2">❌ Typical Logging</h5>
+                <div className="bg-gradient-to-br from-[#58A6FF]/10 to-[#4A90E2]/10 border border-[#58A6FF]/30 rounded p-3">
+                  <h5 className="text-[#58A6FF] font-semibold text-sm mb-2">📝 Standard Logging</h5>
                   <CodeBlock language="json">
 {`{
   "action": "python_code",
@@ -69,13 +69,13 @@ export default function ExecutionTrace() {
   "result": "4"
 }`}
                   </CodeBlock>
-                  <p className="text-red-200 text-xs mt-2">
-                    Missing: What the model actually saw, raw output, parsing details, tool execution context
+                  <p className="text-gray-400 text-xs mt-2">
+                    Typical approach: Structured but incomplete information
                   </p>
                 </div>
                 
-                <div className="bg-green-900/30 border border-green-700 rounded p-3">
-                  <h5 className="text-green-400 font-semibold text-sm mb-2">✅ What Actually Happened</h5>
+                <div className="bg-gradient-to-br from-[#3FB950]/10 to-[#10B981]/10 border border-[#3FB950]/30 rounded p-3">
+                  <h5 className="text-[#3FB950] font-semibold text-sm mb-2">✅ High-Fidelity Trace</h5>
                   <CodeBlock language="text">
 {`Model saw: "Solve: What is 2+2?"
 Model output: "I need to calculate this.
@@ -86,19 +86,19 @@ Tool executed: Python interpreter
 Raw tool output: "4\\n"
 Parsed result: {"result": "4"}`}
                   </CodeBlock>
-                  <p className="text-green-200 text-xs mt-2">
-                    Complete information enables accurate training
+                  <p className="text-[#3FB950] text-xs mt-2">
+                    Complete information enables accurate training and debugging
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 p-4 bg-yellow-900/20 border border-yellow-600 rounded-lg">
-              <h4 className="font-semibold text-yellow-400 mb-2">⚠️ The Consequence</h4>
-              <p className="text-yellow-200 text-sm">
-                When you train on incomplete or processed data, your model learns from a distorted view of reality. 
-                This leads to poor performance, unreliable behavior, and difficulty debugging issues. 
-                <strong>You can&apos;t fix what you can&apos;t see.</strong>
+            <div className="mt-6 p-4 bg-gradient-to-br from-[#3FB950]/10 to-[#10B981]/10 border border-[#3FB950]/30 rounded-lg">
+              <h4 className="font-semibold text-[#3FB950] mb-2">💡 The ToolBrain Advantage</h4>
+              <p className="text-gray-300 text-sm">
+                With complete, high-fidelity execution traces, your model learns from an accurate view of reality. 
+                This leads to better performance, reliable behavior, and easy debugging capabilities. 
+                <strong>Complete visibility enables perfect training.</strong>
               </p>
             </div>
           </div>
@@ -678,13 +678,13 @@ def debug_trace(trace: ExecutionTrace):
               </div>
               
               <div>
-                <h3 className="text-lg font-semibold text-red-400 mb-3">❌ What You Avoid</h3>
-                <ul className="text-red-200 text-sm space-y-2">
-                  <li>• Garbage-in-garbage-out training</li>
-                  <li>• Mysterious agent failures</li>
-                  <li>• Unreliable reward signals</li>
-                  <li>• Debugging nightmare scenarios</li>
-                  <li>• Inconsistent performance</li>
+                <h3 className="text-lg font-semibold text-[#3FB950] mb-3">🎯 Key Benefits</h3>
+                <ul className="text-[#3FB950] text-sm space-y-2">
+                  <li>• High-quality training data</li>
+                  <li>• Clear behavior visibility</li>
+                  <li>• Enhanced reward computation</li>
+                  <li>• Efficient debugging workflows</li>
+                  <li>• Consistent performance metrics</li>
                 </ul>
               </div>
             </div>

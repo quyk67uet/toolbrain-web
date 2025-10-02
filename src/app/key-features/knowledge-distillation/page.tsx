@@ -4,503 +4,342 @@ import Layout from '@/components/Layout';
 import CodeBlock from '@/components/CodeBlock';
 
 export default function KnowledgeDistillation() {
-  return (
-    <Layout>
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">Guide: Knowledge Distillation</h1>
-          <p className="text-gray-300 text-lg">
-            Learn how ToolBrain's knowledge distillation enables efficient transfer of capabilities from large teacher models to smaller, more practical student agents.
-          </p>
-        </div>
+  const distillationCode = `from toolbrain import Brain
+from smolagents import CodeAgent
+from toolbrain.models import UnslothModel
 
-        {/* Why Knowledge Distillation */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">The "Why": Pre-training Small Models</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              Knowledge distillation addresses a fundamental challenge in AI: how to get the performance of large, 
-              expensive models while maintaining the efficiency and deployability of smaller models.
-            </p>
-            
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <div className="bg-red-900/20 border border-red-600 rounded-lg p-4">
-                <h3 className="text-xl font-semibold text-red-400 mb-3">❌ The Problem</h3>
-                <ul className="text-red-200 text-sm space-y-2">
-                  <li>• Large models (GPT-4, Claude) are expensive to run</li>
-                  <li>• High latency makes them impractical for real-time applications</li>
-                  <li>• Resource requirements limit deployment options</li>
-                  <li>• Small models lack the knowledge and capabilities</li>
-                  <li>• Training from scratch requires massive datasets</li>
-                </ul>
-              </div>
-              
-              <div className="bg-green-900/20 border border-green-600 rounded-lg p-4">
-                <h3 className="text-xl font-semibold text-green-400 mb-3">✅ The Solution</h3>
-                <ul className="text-green-200 text-sm space-y-2">
-                  <li>• Transfer knowledge from teacher to student models</li>
-                  <li>• Maintain performance while reducing size and cost</li>
-                  <li>• Enable fast, efficient deployment</li>
-                  <li>• Require minimal training data and compute</li>
-                  <li>• Preserve specialized capabilities and reasoning</li>
-                </ul>
-              </div>
-            </div>
+# 1. Create your small "student" agent
+student_agent = CodeAgent(
+    model=UnslothModel(model_id="Qwen/Qwen2.5-0.5B-Instruct"),
+    tools=[...]
+)
 
-            <div className="bg-blue-900/20 border border-blue-600 rounded-lg p-4">
-              <h3 className="text-xl font-semibold text-blue-400 mb-3">🎯 ToolBrain's Approach</h3>
-              <p className="text-blue-200 text-sm mb-3">
-                ToolBrain makes knowledge distillation effortless through its integrated distillation workflow:
-              </p>
-              <ul className="text-blue-200 text-sm space-y-1">
-                <li>• <strong>Automatic teacher-student pairing:</strong> Smart selection of compatible models</li>
-                <li>• <strong>Task-specific distillation:</strong> Focus on relevant capabilities for your use case</li>
-                <li>• <strong>Integrated workflow:</strong> Seamless integration with training pipeline</li>
-                <li>• <strong>Quality preservation:</strong> Advanced techniques to maintain performance</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* The How: brain.distill() Method */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">The "How": brain.distill() Method</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              The <code className="bg-gray-700 px-2 py-1 rounded">brain.distill()</code> method provides a simple interface 
-              for knowledge transfer. Here's the complete workflow from <code className="bg-gray-700 px-2 py-1 rounded">examples/09_distillation/run_distillation.py</code>:
-            </p>
-            
-            <CodeBlock language="python">
-{`#!/usr/bin/env python3
-"""
-Knowledge Distillation Example
-Demonstrates the two-phase workflow: distill then train
-"""
-
-from toolbrain import Brain
-from toolbrain.agents import CodeAgent
-from toolbrain.rewards import reward_llm_judge_via_ranking
-
-def run_distillation_example():
-    """Complete knowledge distillation workflow."""
-    
-    # Step 1: Define the student agent (small, efficient model)
-    student_agent = CodeAgent(
-        model="Qwen/Qwen2.5-3B-Instruct",  # Small, fast model
-        tools=[
-            "get_stock_price",
-            "calculate_portfolio_value", 
-            "analyze_risk_metrics",
-            "generate_financial_report"
-        ],
-        max_context_length=8192
-    )
-    
-    # Step 2: Initialize Brain for distillation
-    brain = Brain(
-        agent=student_agent,
-        reward_func=reward_llm_judge_via_ranking,
-        learning_algorithm="SFT",  # Start with supervised fine-tuning
-        max_steps=1000,
-        batch_size=16,
-        learning_rate=2e-5,
-        output_dir="./distillation_outputs"
-    )
-    
-    # Step 3: Generate training examples for the domain
-    print("Generating training examples...")
-    training_tasks = brain.generate_training_examples(
-        task_description="Master advanced financial analysis and portfolio management",
-        num_examples=500,
-        difficulty_levels=["basic", "intermediate", "advanced"],
-        include_edge_cases=True
-    )
-    
-    # Step 4: Knowledge distillation from teacher model
-    print("Starting knowledge distillation...")
-    distillation_results = brain.distill(
-        dataset=training_tasks,
-        teacher_model_id="gpt-4-turbo-preview",  # Large, capable teacher
-        distillation_temperature=3.0,            # Controls softness of teacher outputs
-        student_teacher_ratio=0.7,               # Balance between teacher and student loss
-        max_distillation_steps=800,
-        evaluation_steps=100,
-        save_intermediate_checkpoints=True
-    )
-    
-    print(f"Distillation completed. Performance improvement: {distillation_results.improvement_score:.2f}")
-    
-    # Step 5: Further training with reinforcement learning
-    print("Starting reinforcement learning phase...")
-    brain.learning_algorithm = "GRPO"  # Switch to RL for fine-tuning
-    brain.max_steps = 500
-    
-    # Generate more challenging tasks for RL training
-    rl_training_tasks = brain.generate_training_examples(
-        task_description="Complex multi-step financial analysis with tool chaining",
-        num_examples=300,
-        difficulty_levels=["expert"],
-        focus_areas=["tool_usage", "multi_step_reasoning", "error_handling"]
-    )
-    
-    # Continue training with RL
-    rl_results = brain.train(dataset=rl_training_tasks)
-    
-    # Step 6: Comprehensive evaluation
-    print("Evaluating final performance...")
-    evaluation_results = brain.evaluate(
-        test_dataset=generate_test_cases(),
-        metrics=["accuracy", "efficiency", "tool_usage_quality", "reasoning_depth"]
-    )
-    
-    print("\\n=== Final Results ===")
-    print(f"Accuracy: {evaluation_results.accuracy:.3f}")
-    print(f"Efficiency: {evaluation_results.efficiency:.3f}")
-    print(f"Tool Usage Quality: {evaluation_results.tool_usage_quality:.3f}")
-    print(f"Reasoning Depth: {evaluation_results.reasoning_depth:.3f}")
-    
-    return brain
-
-def generate_test_cases():
-    """Generate comprehensive test cases for evaluation."""
-    return [
-        {
-            "task": "Analyze AAPL stock and provide investment recommendation",
-            "complexity": "intermediate",
-            "required_tools": ["get_stock_price", "analyze_risk_metrics"]
-        },
-        {
-            "task": "Build a diversified portfolio for a risk-averse investor with $100K",
-            "complexity": "advanced", 
-            "required_tools": ["get_stock_price", "calculate_portfolio_value", "analyze_risk_metrics"]
-        },
-        {
-            "task": "Generate quarterly performance report for tech-focused portfolio",
-            "complexity": "expert",
-            "required_tools": ["calculate_portfolio_value", "analyze_risk_metrics", "generate_financial_report"]
-        }
-    ]
-
-if __name__ == "__main__":
-    trained_brain = run_distillation_example()`}
-            </CodeBlock>
-          </div>
-        </section>
-
-        {/* Two-Phase Workflow */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Two-Phase Workflow: Distill → Train</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-6">
-              ToolBrain's distillation follows a proven two-phase approach that maximizes both efficiency and performance:
-            </p>
-
-            <div className="space-y-8">
-              {/* Phase 1 */}
-              <div className="bg-blue-900/20 border border-blue-600 rounded-lg p-6">
-                <h3 className="text-2xl font-semibold text-blue-400 mb-4">Phase 1: Knowledge Distillation</h3>
-                <p className="text-blue-200 mb-4">
-                  Transfer core knowledge and capabilities from teacher to student through supervised learning.
-                </p>
-                
-                <CodeBlock language="python">
-{`# Phase 1: Distillation with Supervised Fine-Tuning
+# 2. Initialize the Brain with the student
 brain = Brain(
     agent=student_agent,
-    learning_algorithm="SFT",  # Supervised learning for knowledge transfer
-    max_steps=1000,
-    batch_size=16
+    reward_func=my_reward_function,
+    learning_algorithm="GRPO"
 )
 
-# Generate diverse training examples
-training_data = brain.generate_training_examples(
-    task_description="Master the target domain",
-    num_examples=500
-)
-
-# Distill knowledge from powerful teacher
-distillation_results = brain.distill(
-    dataset=training_data,
-    teacher_model_id="gpt-4-turbo-preview",
-    distillation_temperature=3.0,      # Soft targets from teacher
-    student_teacher_ratio=0.7,         # Balance teacher vs student loss
-    max_distillation_steps=800
-)`}
-                </CodeBlock>
-
-                <div className="mt-4 grid md:grid-cols-2 gap-4">
-                  <div>
-                    <h4 className="font-semibold text-blue-300 mb-2">What Happens:</h4>
-                    <ul className="text-blue-200 text-sm space-y-1">
-                      <li>• Teacher generates high-quality responses</li>
-                      <li>• Student learns to mimic teacher behavior</li>
-                      <li>• Knowledge transfer through soft targets</li>
-                      <li>• Foundation skills and reasoning patterns</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-blue-300 mb-2">Key Benefits:</h4>
-                    <ul className="text-blue-200 text-sm space-y-1">
-                      <li>• Rapid capability acquisition</li>
-                      <li>• Stable, supervised learning</li>
-                      <li>• Preserves teacher's knowledge</li>
-                      <li>• Builds strong foundation</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              {/* Phase 2 */}
-              <div className="bg-purple-900/20 border border-purple-600 rounded-lg p-6">
-                <h3 className="text-2xl font-semibold text-purple-400 mb-4">Phase 2: Reinforcement Learning</h3>
-                <p className="text-purple-200 mb-4">
-                  Fine-tune the distilled model using reinforcement learning to optimize for specific tasks and objectives.
-                </p>
-                
-                <CodeBlock language="python">
-{`# Phase 2: RL Fine-tuning for Task Optimization
-brain.learning_algorithm = "GRPO"  # Switch to reinforcement learning
-brain.reward_func = task_specific_reward
-brain.max_steps = 500
-
-# Generate challenging RL training tasks
-rl_data = brain.generate_training_examples(
-    task_description="Complex multi-step reasoning with tools",
-    num_examples=300,
-    difficulty_levels=["expert"],
-    focus_areas=["tool_chaining", "error_recovery", "optimization"]
-)
-
-# Continue training with RL
-rl_results = brain.train(dataset=rl_data)`}
-                </CodeBlock>
-
-                <div className="mt-4 grid md:grid-cols-2 gap-4">
-                  <div>
-                    <h4 className="font-semibold text-purple-300 mb-2">What Happens:</h4>
-                    <ul className="text-purple-200 text-sm space-y-1">
-                      <li>• Task-specific optimization</li>
-                      <li>• Reward-based fine-tuning</li>
-                      <li>• Exploration of new strategies</li>
-                      <li>• Performance maximization</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-purple-300 mb-2">Key Benefits:</h4>
-                    <ul className="text-purple-200 text-sm space-y-1">
-                      <li>• Optimizes for specific objectives</li>
-                      <li>• Improves beyond teacher performance</li>
-                      <li>• Adapts to deployment constraints</li>
-                      <li>• Discovers new solutions</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Advanced Distillation Features */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Advanced Distillation Features</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              ToolBrain provides advanced distillation capabilities for specialized use cases:
-            </p>
-
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-xl font-semibold text-blue-400 mb-3">Multi-Teacher Distillation</h3>
-                <p className="text-gray-300 mb-3">
-                  Learn from multiple teacher models to combine different strengths and capabilities.
-                </p>
-                <CodeBlock language="python">
-{`# Multi-teacher distillation for comprehensive learning
+# 3. Run distillation as a pre-training step
+# The Brain handles the teacher model internally.
+print("--- Phase 1: Knowledge Distillation ---")
 brain.distill(
-    dataset=training_data,
-    teacher_models=[
-        {
-            "model_id": "gpt-4-turbo-preview",
-            "specialization": "reasoning",
-            "weight": 0.4
-        },
-        {
-            "model_id": "claude-3-opus",
-            "specialization": "analysis", 
-            "weight": 0.3
-        },
-        {
-            "model_id": "gemini-pro",
-            "specialization": "tool_usage",
-            "weight": 0.3
-        }
-    ],
-    ensemble_strategy="weighted_average"
-)`}
-                </CodeBlock>
-              </div>
+    dataset=training_dataset,
+    teacher_model_id="Qwen/Qwen2.5-7B-Instruct" # Specify the teacher
+)
 
-              <div>
-                <h3 className="text-xl font-semibold text-green-400 mb-3">Progressive Distillation</h3>
-                <p className="text-gray-300 mb-3">
-                  Gradually increase task complexity during distillation for better learning.
-                </p>
-                <CodeBlock language="python">
-{`# Progressive difficulty distillation
-difficulty_schedule = [
-    {"level": "basic", "steps": 200, "temperature": 4.0},
-    {"level": "intermediate", "steps": 300, "temperature": 3.0},
-    {"level": "advanced", "steps": 300, "temperature": 2.0},
-    {"level": "expert", "steps": 200, "temperature": 1.5}
-]
+# 4. Continue with standard RL training on the now "warmed-up" student
+print("\\n--- Phase 2: Reinforcement Learning ---")
+brain.train(dataset=training_dataset, num_iterations=10)`;
 
-for stage in difficulty_schedule:
-    print(f"Distilling {stage['level']} tasks...")
-    
-    stage_data = brain.generate_training_examples(
-        task_description=f"{stage['level']} financial analysis",
-        difficulty_levels=[stage['level']]
-    )
-    
-    brain.distill(
-        dataset=stage_data,
-        teacher_model_id="gpt-4-turbo-preview",
-        distillation_temperature=stage['temperature'],
-        max_distillation_steps=stage['steps']
-    )`}
-                </CodeBlock>
-              </div>
-
-              <div>
-                <h3 className="text-xl font-semibold text-purple-400 mb-3">Selective Distillation</h3>
-                <p className="text-gray-300 mb-3">
-                  Focus distillation on specific capabilities or knowledge areas.
-                </p>
-                <CodeBlock language="python">
-{`# Selective distillation for specific capabilities
-capabilities = [
-    {
-        "name": "tool_usage",
-        "focus": "Correct API usage and parameter handling",
-        "examples": 150,
-        "weight": 0.4
-    },
-    {
-        "name": "error_handling", 
-        "focus": "Robust error detection and recovery",
-        "examples": 100,
-        "weight": 0.3
-    },
-    {
-        "name": "reasoning",
-        "focus": "Multi-step logical reasoning",
-        "examples": 100,
-        "weight": 0.3
-    }
-]
-
-for capability in capabilities:
-    print(f"Distilling {capability['name']} capability...")
-    
-    focused_data = brain.generate_training_examples(
-        task_description=capability['focus'],
-        num_examples=capability['examples'],
-        focus_areas=[capability['name']]
-    )
-    
-    brain.distill(
-        dataset=focused_data,
-        teacher_model_id="gpt-4-turbo-preview",
-        capability_weight=capability['weight']
-    )`}
-                </CodeBlock>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Performance Comparison */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Performance Impact</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-6">
-              Knowledge distillation typically achieves significant performance improvements while maintaining efficiency:
+  return (
+    <Layout>
+      <div className="max-w-6xl mx-auto">
+        {/* PHẦN 1: THE PROBLEM - "MODEL NHỎ KHÓ HỌC" */}
+        <div className="text-center mb-20">
+          <h1 className="text-5xl font-bold text-[#E6EDF3] mb-8">
+            Knowledge Distillation
+          </h1>
+          
+          <div className="max-w-4xl mx-auto space-y-6">
+            <p className="text-xl text-gray-400 leading-relaxed">
+              When training agents with smaller, more efficient language models, you may observe slow convergence and 
+              poor performance during the initial stages of Reinforcement Learning. This is because small models have 
+              a limited capacity and struggle with the inefficient exploration required at the beginning of RL training.
             </p>
-
-            <div className="grid md:grid-cols-3 gap-6 mb-6">
-              <div className="bg-red-900/20 border border-red-600 rounded-lg p-4 text-center">
-                <h3 className="text-xl font-semibold text-red-400 mb-2">Baseline</h3>
-                <p className="text-red-200 text-sm mb-3">3B model trained from scratch</p>
-                <div className="space-y-1 text-sm">
-                  <div className="text-gray-300">Accuracy: <span className="text-red-400">65%</span></div>
-                  <div className="text-gray-300">Efficiency: <span className="text-red-400">Fast</span></div>
-                  <div className="text-gray-300">Cost: <span className="text-red-400">Low</span></div>
-                </div>
+            
+            <div className="bg-gradient-to-r from-[#58A6FF]/10 to-[#3FB950]/10 border border-[#58A6FF]/30 rounded-xl p-8">
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <div className="text-3xl">💡</div>
+                <h3 className="text-2xl font-bold text-[#58A6FF]">The Solution</h3>
               </div>
-
-              <div className="bg-blue-900/20 border border-blue-600 rounded-lg p-4 text-center">
-                <h3 className="text-xl font-semibold text-blue-400 mb-2">Teacher Model</h3>
-                <p className="text-blue-200 text-sm mb-3">GPT-4 Turbo (Large)</p>
-                <div className="space-y-1 text-sm">
-                  <div className="text-gray-300">Accuracy: <span className="text-blue-400">92%</span></div>
-                  <div className="text-gray-300">Efficiency: <span className="text-blue-400">Slow</span></div>
-                  <div className="text-gray-300">Cost: <span className="text-blue-400">High</span></div>
-                </div>
-              </div>
-
-              <div className="bg-green-900/20 border border-green-600 rounded-lg p-4 text-center">
-                <h3 className="text-xl font-semibold text-green-400 mb-2">Distilled</h3>
-                <p className="text-green-200 text-sm mb-3">3B model + distillation</p>
-                <div className="space-y-1 text-sm">
-                  <div className="text-gray-300">Accuracy: <span className="text-green-400">87%</span></div>
-                  <div className="text-gray-300">Efficiency: <span className="text-green-400">Fast</span></div>
-                  <div className="text-gray-300">Cost: <span className="text-green-400">Low</span></div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-yellow-900/20 border border-yellow-600 rounded-lg p-4">
-              <h4 className="font-semibold text-yellow-400 mb-2">🎯 Sweet Spot</h4>
-              <p className="text-yellow-200 text-sm">
-                Distillation achieves 95% of teacher performance at 10% of the computational cost. 
-                This makes it ideal for production deployments where both quality and efficiency matter.
+              <p className="text-xl font-semibold text-[#E6EDF3]">
+                How can we give our small "student" model a massive head start? 
+                By letting it learn from a powerful "teacher" model first.
               </p>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* Best Practices */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Best Practices</h2>
-          <div className="bg-gray-800 rounded-lg p-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-lg font-semibold text-green-400 mb-3">✅ Do's</h3>
-                <ul className="text-green-200 text-sm space-y-2">
-                  <li>• Start with diverse, high-quality training examples</li>
-                  <li>• Use appropriate teacher models for your domain</li>
-                  <li>• Monitor distillation metrics during training</li>
-                  <li>• Follow distillation with task-specific RL</li>
-                  <li>• Validate performance on held-out test sets</li>
-                  <li>• Save intermediate checkpoints for rollback</li>
-                </ul>
+        {/* Benefits Comparison */}
+        <div className="mb-20">
+          <h2 className="text-3xl font-bold text-[#E6EDF3] text-center mb-8">
+            The Power of Starting with Expert Knowledge
+          </h2>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-gradient-to-br from-[#58A6FF]/10 to-[#4A90E2]/10 border border-[#58A6FF]/30 rounded-xl p-8">
+              <div className="text-center">
+                <div className="text-4xl mb-4">🏋️</div>
+                <h3 className="text-xl font-bold text-[#58A6FF] mb-4">Traditional Training</h3>
+                <p className="text-gray-400 text-sm mb-4">Starting from scratch</p>
+                <div className="space-y-3 text-left">
+                  <p className="text-gray-300 text-sm flex items-center gap-2">
+                    <span className="w-2 h-2 bg-[#58A6FF] rounded-full"></span>
+                    Models learn through trial and error
+                  </p>
+                  <p className="text-gray-300 text-sm flex items-center gap-2">
+                    <span className="w-2 h-2 bg-[#58A6FF] rounded-full"></span>
+                    Extended exploration phase required
+                  </p>
+                  <p className="text-gray-300 text-sm flex items-center gap-2">
+                    <span className="w-2 h-2 bg-[#58A6FF] rounded-full"></span>
+                    More training iterations needed
+                  </p>
+                </div>
               </div>
-              
-              <div>
-                <h3 className="text-lg font-semibold text-red-400 mb-3">❌ Don'ts</h3>
-                <ul className="text-red-200 text-sm space-y-2">
-                  <li>• Don't use mismatched teacher-student architectures</li>
-                  <li>• Don't skip evaluation during distillation</li>
-                  <li>• Don't use too high distillation temperatures</li>
-                  <li>• Don't over-distill (watch for overfitting)</li>
-                  <li>• Don't ignore domain-specific fine-tuning</li>
-                  <li>• Don't assume distillation works for all tasks</li>
-                </ul>
+            </div>
+            
+            <div className="bg-gradient-to-br from-[#3FB950]/10 to-[#10B981]/10 border border-[#3FB950]/30 rounded-xl p-8">
+              <div className="text-center">
+                <div className="text-4xl mb-4">🚀</div>
+                <h3 className="text-xl font-bold text-[#3FB950] mb-4">With Knowledge Distillation</h3>
+                <p className="text-gray-400 text-sm mb-4">Starting with expert guidance</p>
+                <div className="space-y-3 text-left">
+                  <p className="text-gray-300 text-sm flex items-center gap-2">
+                    <span className="w-2 h-2 bg-[#3FB950] rounded-full"></span>
+                    Pre-trained with expert demonstrations
+                  </p>
+                  <p className="text-gray-300 text-sm flex items-center gap-2">
+                    <span className="w-2 h-2 bg-[#3FB950] rounded-full"></span>
+                    Accelerated learning from day one
+                  </p>
+                  <p className="text-gray-300 text-sm flex items-center gap-2">
+                    <span className="w-2 h-2 bg-[#3FB950] rounded-full"></span>
+                    Superior final performance achieved
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+
+        {/* PHẦN 2: THE SOLUTION - DISTILLATION PIPELINE */}
+        <div className="mb-20">
+          <h2 className="text-4xl font-bold text-[#E6EDF3] text-center mb-8">
+            The Distillation Pipeline in ToolBrain
+          </h2>
+          
+          <p className="text-lg text-gray-400 mb-12 text-center max-w-3xl mx-auto leading-relaxed">
+            ToolBrain provides a simple <code className="bg-[#161B22] px-2 py-1 rounded text-[#58A6FF]">.distill()</code> method 
+            that automates the entire knowledge distillation process. Here's what happens under the hood:
+          </p>
+
+          {/* VISUAL PIPELINE */}
+          <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-12">
+            
+            {/* Mobile Layout */}
+            <div className="flex flex-col lg:hidden space-y-12">
+              
+              {/* Step 1: Generate */}
+              <div className="text-center">
+                <div className="bg-gradient-to-br from-[#58A6FF]/20 to-[#4A90E2]/20 border-2 border-[#58A6FF] rounded-xl p-8 mb-6">
+                  <div className="flex items-center justify-center gap-4 mb-4">
+                    <div className="text-5xl">👨‍🏫</div>
+                    <div className="text-3xl">→</div>
+                    <div className="flex gap-2">
+                      <div className="text-2xl">📜</div>
+                      <div className="text-2xl">📜</div>
+                      <div className="text-2xl">📜</div>
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-bold text-[#58A6FF] mb-3">1. Generate</h3>
+                  <p className="text-gray-300 leading-relaxed">
+                    <span className="font-semibold text-[#58A6FF]">Teacher Generation:</span> A large, powerful "teacher" model 
+                    (e.g., GPT-4) runs the tasks and generates high-quality, successful Execution Traces.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 2: Filter */}
+              <div className="text-center">
+                <div className="bg-gradient-to-br from-[#7C3AED]/20 to-[#6366F1]/20 border-2 border-[#7C3AED] rounded-xl p-8 mb-6">
+                  <div className="flex items-center justify-center gap-4 mb-4">
+                    <div className="text-5xl">🔽</div>
+                    <div className="text-3xl">→</div>
+                    <div className="flex gap-2">
+                      <div className="text-2xl">✨</div>
+                      <div className="text-2xl">🏆</div>
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-bold text-[#7C3AED] mb-3">2. Filter</h3>
+                  <p className="text-gray-300 leading-relaxed">
+                    <span className="font-semibold text-[#7C3AED]">Quality Filtering:</span> ToolBrain automatically filters 
+                    these traces, keeping only the most successful examples.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 3: Train */}
+              <div className="text-center">
+                <div className="bg-gradient-to-br from-[#3FB950]/20 to-[#10B981]/20 border-2 border-[#3FB950] rounded-xl p-8">
+                  <div className="flex items-center justify-center gap-4 mb-4">
+                    <div className="flex gap-2">
+                      <div className="text-2xl">✨</div>
+                      <div className="text-2xl">🏆</div>
+                    </div>
+                    <div className="text-3xl">→</div>
+                    <div className="text-5xl">👨‍🎓</div>
+                  </div>
+                  <h3 className="text-2xl font-bold text-[#3FB950] mb-3">3. Train</h3>
+                  <p className="text-gray-300 leading-relaxed">
+                    <span className="font-semibold text-[#3FB950]">Supervised Learning:</span> The small "student" model is 
+                    then trained on this curated dataset of expert demonstrations using a standard supervised learning loss.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop Layout */}
+            <div className="hidden lg:flex items-center justify-center gap-8">
+              
+              {/* Step 1: Generate */}
+              <div className="flex-1">
+                <div className="bg-gradient-to-br from-[#58A6FF]/20 to-[#4A90E2]/20 border-2 border-[#58A6FF] rounded-xl p-6 text-center">
+                  <div className="text-5xl mb-4">👨‍🏫</div>
+                  <h3 className="text-xl font-bold text-[#58A6FF] mb-3">1. Generate</h3>
+                  <div className="flex justify-center gap-1 mb-4">
+                    <div className="text-xl">📜</div>
+                    <div className="text-xl">📜</div>
+                    <div className="text-xl">📜</div>
+                  </div>
+                  <p className="text-sm text-gray-300 leading-relaxed">
+                    Teacher model generates high-quality Execution Traces
+                  </p>
+                </div>
+              </div>
+
+              {/* Arrow 1 */}
+              <div className="flex justify-center">
+                <svg className="w-12 h-8 text-[#58A6FF]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z"/>
+                </svg>
+              </div>
+
+              {/* Step 2: Filter */}
+              <div className="flex-1">
+                <div className="bg-gradient-to-br from-[#7C3AED]/20 to-[#6366F1]/20 border-2 border-[#7C3AED] rounded-xl p-6 text-center">
+                  <div className="text-5xl mb-4">🔽</div>
+                  <h3 className="text-xl font-bold text-[#7C3AED] mb-3">2. Filter</h3>
+                  <div className="flex justify-center gap-1 mb-4">
+                    <div className="text-xl">✨</div>
+                    <div className="text-xl">🏆</div>
+                  </div>
+                  <p className="text-sm text-gray-300 leading-relaxed">
+                    Automatic quality filtering keeps only the best examples
+                  </p>
+                </div>
+              </div>
+
+              {/* Arrow 2 */}
+              <div className="flex justify-center">
+                <svg className="w-12 h-8 text-[#58A6FF]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z"/>
+                </svg>
+              </div>
+
+              {/* Step 3: Train */}
+              <div className="flex-1">
+                <div className="bg-gradient-to-br from-[#3FB950]/20 to-[#10B981]/20 border-2 border-[#3FB950] rounded-xl p-6 text-center">
+                  <div className="text-5xl mb-4">👨‍🎓</div>
+                  <h3 className="text-xl font-bold text-[#3FB950] mb-3">3. Train</h3>
+                  <div className="flex justify-center gap-1 mb-4">
+                    <div className="text-xl">🧠</div>
+                    <div className="text-xl">📚</div>
+                  </div>
+                  <p className="text-sm text-gray-300 leading-relaxed">
+                    Student model learns from expert demonstrations
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-[#3FB950]/10 border border-[#3FB950]/30 rounded-xl p-6 mt-8">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="text-2xl">🎯</div>
+              <h3 className="text-xl font-bold text-[#3FB950]">The Result</h3>
+            </div>
+            <p className="text-gray-300 leading-relaxed">
+              The result is a student model that has been "warmed up" with expert knowledge, making it ready for 
+              much more efficient and effective Reinforcement Learning fine-tuning.
+            </p>
+          </div>
+        </div>
+
+        {/* PHẦN 3: THE API IN ACTION */}
+        <div className="mb-20">
+          <h2 className="text-4xl font-bold text-[#E6EDF3] mb-8">
+            How to Use It
+          </h2>
+          
+          <p className="text-lg text-gray-400 mb-8 leading-relaxed">
+            Integrating distillation into your workflow is incredibly simple. You first initialize your Brain with your 
+            small student agent, and then call the <code className="bg-[#161B22] px-2 py-1 rounded text-[#58A6FF]">.distill()</code> method 
+            before your main <code className="bg-[#161B22] px-2 py-1 rounded text-[#58A6FF]">.train()</code> call.
+          </p>
+
+          <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-8">
+            <h4 className="text-xl font-bold text-[#3FB950] mb-6 flex items-center gap-2">
+              <span className="text-2xl">💡</span>
+              Complete Example
+            </h4>
+            <CodeBlock language="python" filename="distillation_workflow.py">
+              {distillationCode}
+            </CodeBlock>
+          </div>
+        </div>
+
+        {/* Benefits Section */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold text-[#E6EDF3] text-center mb-8">
+            Why Knowledge Distillation Works
+          </h2>
+          
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-gradient-to-br from-[#58A6FF]/10 to-[#4A90E2]/10 border border-[#58A6FF]/30 rounded-xl p-6">
+              <div className="text-3xl mb-4 text-center">⚡</div>
+              <h3 className="text-xl font-bold text-[#58A6FF] mb-3 text-center">Faster Convergence</h3>
+              <p className="text-gray-300 text-sm text-center leading-relaxed">
+                Student models start with expert knowledge, dramatically reducing the time to reach good performance.
+              </p>
+            </div>
+            
+            <div className="bg-gradient-to-br from-[#7C3AED]/10 to-[#6366F1]/10 border border-[#7C3AED]/30 rounded-xl p-6">
+              <div className="text-3xl mb-4 text-center">🎯</div>
+              <h3 className="text-xl font-bold text-[#7C3AED] mb-3 text-center">Better Final Performance</h3>
+              <p className="text-gray-300 text-sm text-center leading-relaxed">
+                Starting from a good baseline often leads to better final performance compared to random initialization.
+              </p>
+            </div>
+            
+            <div className="bg-gradient-to-br from-[#3FB950]/10 to-[#10B981]/10 border border-[#3FB950]/30 rounded-xl p-6">
+              <div className="text-3xl mb-4 text-center">💰</div>
+              <h3 className="text-xl font-bold text-[#3FB950] mb-3 text-center">Cost Efficient</h3>
+              <p className="text-gray-300 text-sm text-center leading-relaxed">
+                Reduces the computational cost of training by requiring fewer RL iterations to reach target performance.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* CALL TO ACTION */}
+        <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-12 text-center">
+          <h2 className="text-3xl font-bold text-[#E6EDF3] mb-6">
+            Ready to Accelerate Your Training?
+          </h2>
+          <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+            Give your small models a massive head start with ToolBrain's knowledge distillation.
+          </p>
+          
+          <a 
+            href="/key-features"
+            className="inline-block bg-[#58A6FF] hover:bg-[#4A90E2] text-white px-10 py-4 rounded-lg text-lg font-semibold transition-colors duration-200 shadow-lg hover:shadow-xl"
+          >
+            Explore More Features
+          </a>
+        </div>
       </div>
     </Layout>
   );

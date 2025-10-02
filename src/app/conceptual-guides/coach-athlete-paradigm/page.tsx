@@ -37,23 +37,23 @@ export default function CoachAthleteParadigm() {
 
         {/* The Problem */}
         <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">The Problem: The Tangle of Agent & RL Logic</h2>
+          <h2 className="text-3xl font-semibold text-white mb-6">The Challenge: Managing Complexity in Agent Systems</h2>
           <div className="bg-gray-800 rounded-lg p-6 mb-6">
             <p className="text-gray-300 mb-4">
-              In many existing systems, the agent&apos;s task-solving logic is tightly coupled with the reinforcement learning logic. 
-              This creates several critical challenges that hinder both usability and extensibility:
+              In many existing systems, the agent's task-solving logic is tightly coupled with the reinforcement learning logic. 
+              This creates several architectural challenges that affect both usability and extensibility:
             </p>
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <div className="bg-red-900/20 border border-red-600 rounded-lg p-4">
-                <h3 className="text-xl font-semibold text-red-400 mb-3">❌ Tight Coupling Problems</h3>
-                <ul className="text-red-200 text-sm space-y-2">
-                  <li>• <strong>Hard to maintain:</strong> Changes to agent logic require RL expertise</li>
-                  <li>• <strong>Difficult to extend:</strong> Adding new agent types means rewriting RL components</li>
-                  <li>• <strong>High barrier to entry:</strong> Developers need deep RL knowledge for basic tasks</li>
-                  <li>• <strong>Code duplication:</strong> Similar RL logic scattered across different agent types</li>
-                  <li>• <strong>Testing complexity:</strong> Can&apos;t test agent logic independently from training</li>
-                  <li>• <strong>Poor modularity:</strong> Everything depends on everything else</li>
+              <div className="bg-gradient-to-br from-[#58A6FF]/10 to-[#4A90E2]/10 border border-[#58A6FF]/30 rounded-lg p-4">
+                <h3 className="text-xl font-semibold text-[#58A6FF] mb-3">🔧 Traditional Approach</h3>
+                <ul className="text-gray-300 text-sm space-y-2">
+                  <li>• <strong>Coupled architecture:</strong> Agent logic mixed with RL components</li>
+                  <li>• <strong>Framework-specific:</strong> Each agent type needs custom RL implementation</li>
+                  <li>• <strong>Higher complexity:</strong> Developers need both domain AND RL expertise</li>
+                  <li>• <strong>Code duplication:</strong> Similar RL logic scattered across implementations</li>
+                  <li>• <strong>Testing challenges:</strong> Cannot isolate agent logic from training logic</li>
+                  <li>• <strong>Maintenance overhead:</strong> Changes require understanding multiple systems</li>
                 </ul>
               </div>
               
@@ -89,17 +89,17 @@ class CodeAgentWithRL:
         pass`}
                 </CodeBlock>
                 <p className="text-gray-400 text-xs mt-2">
-                  This approach makes it impossible to reuse the RL training logic with different agent frameworks.
+                  This approach makes it challenging to reuse the RL training logic with different agent frameworks.
                 </p>
               </div>
             </div>
 
-            <div className="bg-yellow-900/20 border border-yellow-600 rounded-lg p-4">
-              <h4 className="font-semibold text-yellow-400 mb-2">🚧 The Consequences</h4>
-              <p className="text-yellow-200 text-sm">
-                When agent logic and RL logic are intertwined, every new agent framework requires a complete rewrite 
-                of the training infrastructure. This leads to fragmented ecosystems where each agent type has its own 
-                training approach, making it nearly impossible to leverage advances across different frameworks.
+            <div className="bg-gradient-to-br from-[#3FB950]/10 to-[#10B981]/10 border border-[#3FB950]/30 rounded-lg p-4">
+              <h4 className="font-semibold text-[#3FB950] mb-2">� The ToolBrain Approach</h4>
+              <p className="text-gray-300 text-sm">
+                ToolBrain addresses these challenges with the Coach-Athlete paradigm, creating clear separation 
+                between task execution and training concerns. This enables framework-agnostic RL training and 
+                dramatically simplifies the development process.
               </p>
             </div>
           </div>
@@ -176,15 +176,22 @@ result = athlete.run("Calculate the fibonacci sequence up to n=20")
                 
                 <CodeBlock language="python">
 {`# The Coach: Pure training logic ✅
-from toolbrain import Brain
+from toolbrain import Brain, ToolRetriever
 from toolbrain.rewards import reward_llm_judge_via_ranking
+
+# Create and configure the ToolRetriever
+tool_retriever = ToolRetriever(
+    model_id="Qwen/Qwen2.5-72B-Instruct",
+    top_k=5,  # Select top 5 most relevant tools
+    similarity_threshold=0.7  # Only include highly relevant tools
+)
 
 # The Coach focuses purely on training
 coach = Brain(
     agent=athlete,  # The Athlete to train
     reward_func=reward_llm_judge_via_ranking,
     learning_algorithm="GRPO",
-    enable_tool_retrieval=True
+    tool_retriever=tool_retriever  # Enable intelligent tool selection
 )
 
 # The Coach orchestrates training without knowing agent internals
@@ -313,7 +320,7 @@ Shows how all three components work together seamlessly
 """
 
 from smolagents import CodeAgent
-from toolbrain import Brain
+from toolbrain import Brain, ToolRetriever
 from toolbrain.adapters import SmolAgentAdapter
 from toolbrain.rewards import reward_llm_judge_via_ranking
 
@@ -326,12 +333,19 @@ athlete = CodeAgent(
 # Step 2: Create The Interpreter (translation layer)
 interpreter = SmolAgentAdapter(athlete)
 
-# Step 3: Create The Coach (training orchestration)
+# Step 3: Create and configure the ToolRetriever
+tool_retriever = ToolRetriever(
+    model_id="Qwen/Qwen2.5-72B-Instruct",
+    top_k=3,  # Select top 3 most relevant tools per task
+    similarity_threshold=0.8
+)
+
+# Step 4: Create The Coach (training orchestration)
 coach = Brain(
     agent=interpreter,  # Coach works through Interpreter
     reward_func=reward_llm_judge_via_ranking,
     learning_algorithm="GRPO",
-    enable_tool_retrieval=True
+    tool_retriever=tool_retriever  # Intelligent tool selection
 )
 
 # Step 4: Training (Coach-Athlete paradigm in action)
@@ -395,7 +409,7 @@ coach.train(tasks=tasks, num_iterations=50)
                   <h4 className="font-semibold text-green-300 mb-2">📊 User Experience Comparison</h4>
                   <div className="space-y-3">
                     <div className="flex items-center gap-4">
-                      <span className="text-red-400 w-16">Before:</span>
+                      <span className="text-[#58A6FF] w-16">Before:</span>
                       <span className="text-gray-300 text-sm">"I need to learn GRPO, PPO, reward modeling, and policy gradients to train my agent"</span>
                     </div>
                     <div className="flex items-center gap-4">

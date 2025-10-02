@@ -6,672 +6,294 @@ import CodeBlock from '@/components/CodeBlock';
 export default function ZeroLearnTaskGeneration() {
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">Guide: Zero-Learn Task Generation</h1>
-          <p className="text-gray-300 text-lg">
-            Discover how ToolBrain automatically generates diverse training examples, solving the data scarcity problem and enabling rapid agent training.
-          </p>
+      <div className="max-w-6xl mx-auto px-4 py-16">
+        
+        {/* PHẦN 1: THE PROBLEM - "THE BLANK PAGE" */}
+        <div className="mb-20">
+          <h1 className="text-5xl font-bold text-[#E6EDF3] mb-8 text-center">
+            Zero-Learn Task Generation
+          </h1>
+          
+          <div className="max-w-4xl mx-auto text-center mb-12">
+            <p className="text-xl text-gray-400 mb-6 leading-relaxed">
+              One of the biggest hurdles in training an agent is the lack of high-quality, tool-specific training data. 
+              Manually writing dozens or hundreds of diverse and realistic task examples is a time-consuming and tedious process.
+            </p>
+            <p className="text-xl text-gray-300 leading-relaxed">
+              ToolBrain solves this <span className="text-[#58A6FF] font-semibold">"blank page"</span> problem with its 
+              <code className="bg-[#161B22] px-2 py-1 rounded text-[#58A6FF] mx-2">generate_training_examples</code> 
+              method, allowing you to bootstrap the entire training process from a simple, high-level description.
+            </p>
+          </div>
+
+          {/* Problem Illustration */}
+          <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-8">
+            <div className="text-center">
+              <div className="text-6xl mb-4">📄</div>
+              <h3 className="text-2xl font-bold text-[#58A6FF] mb-4">The "Blank Page" Challenge</h3>
+              <p className="text-gray-400 max-w-2xl mx-auto">
+                Starting with zero training examples means spending countless hours manually crafting realistic, 
+                diverse tasks that properly exercise your agent's tools.
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* The Why: Data Scarcity Problem */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">The "Why": Solving Data Scarcity</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              One of the biggest challenges in training intelligent agents is the lack of high-quality, diverse training data. 
-              Traditional approaches require extensive manual data collection and labeling, which is expensive and time-consuming.
-            </p>
+        {/* PHẦN 2: THE SOLUTION - AUTOMATED TASK CREATION */}
+        <div className="mb-20">
+          <h2 className="text-4xl font-bold text-[#E6EDF3] text-center mb-8">
+            How It Works: From Description to Dataset
+          </h2>
+          
+          <p className="text-lg text-gray-400 mb-12 text-center max-w-3xl mx-auto leading-relaxed">
+            The <code className="bg-[#161B22] px-2 py-1 rounded text-[#58A6FF]">generate_training_examples</code> method 
+            uses a powerful LLM to act as a <span className="text-[#3FB950] font-semibold">"curriculum designer"</span>. 
+            You provide it with a high-level description of the desired tasks and the tools your agent has. 
+            It then generates a list of diverse, realistic, and tool-aligned query strings that can be used directly as a training dataset.
+          </p>
+
+          {/* VISUAL PIPELINE */}
+          <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-12">
             
-            <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <div className="bg-red-900/20 border border-red-600 rounded-lg p-4">
-                <h3 className="text-xl font-semibold text-red-400 mb-3">❌ Traditional Data Collection</h3>
-                <ul className="text-red-200 text-sm space-y-2">
-                  <li>• <strong>Manual effort:</strong> Requires human experts to create examples</li>
-                  <li>• <strong>Time consuming:</strong> Weeks or months to gather sufficient data</li>
-                  <li>• <strong>Expensive:</strong> High cost for domain experts and annotation</li>
-                  <li>• <strong>Limited diversity:</strong> Human bias leads to narrow example distribution</li>
-                  <li>• <strong>Static datasets:</strong> Can&apos;t adapt to new domains or requirements</li>
-                  <li>• <strong>Quality inconsistency:</strong> Varying quality across different annotators</li>
-                </ul>
-              </div>
+            {/* Desktop Layout */}
+            <div className="hidden lg:flex items-center justify-center space-x-8">
               
-              <div className="bg-blue-900/20 border border-blue-600 rounded-lg p-4">
-                <h3 className="text-xl font-semibold text-blue-400 mb-3">📊 Real-World Impact</h3>
-                <div className="space-y-3 text-sm">
-                  <div className="bg-gray-700 rounded p-2">
-                    <p className="text-blue-200"><strong>Finance Domain:</strong></p>
-                    <p className="text-gray-300">Need 10K+ examples → 6 months manual collection</p>
+              {/* Input */}
+              <div className="flex-1 max-w-xs">
+                <div className="bg-gradient-to-br from-[#58A6FF]/20 to-[#4A90E2]/20 border border-[#58A6FF]/50 rounded-xl p-6 h-full">
+                  <div className="text-center">
+                    <div className="text-4xl mb-3">📝</div>
+                    <h3 className="text-lg font-bold text-[#58A6FF] mb-2">Task Description</h3>
+                    <p className="text-xs text-gray-400 mb-3">High-level requirements</p>
+                    <div className="border-t border-[#58A6FF]/20 pt-3">
+                      <div className="text-2xl mb-1">🛠️</div>
+                      <p className="text-xs text-gray-400">Available Tools</p>
+                    </div>
                   </div>
-                  <div className="bg-gray-700 rounded p-2">
-                    <p className="text-blue-200"><strong>Code Generation:</strong></p>
-                    <p className="text-gray-300">Diverse programming tasks → $50K+ annotation cost</p>
+                </div>
+              </div>
+
+              {/* Arrow */}
+              <div className="flex-shrink-0">
+                <div className="text-[#58A6FF] text-4xl">→</div>
+              </div>
+
+              {/* Process */}
+              <div className="flex-1 max-w-xs">
+                <div className="bg-gradient-to-br from-[#7C3AED]/20 to-[#6366F1]/20 border border-[#7C3AED]/50 rounded-xl p-6 h-full">
+                  <div className="text-center">
+                    <div className="text-4xl mb-3">🧠</div>
+                    <h3 className="text-lg font-bold text-[#7C3AED] mb-2">LLM Curriculum</h3>
+                    <h3 className="text-lg font-bold text-[#7C3AED] mb-3">Designer</h3>
+                    <code className="text-xs text-[#7C3AED] bg-[#7C3AED]/10 px-2 py-1 rounded block">
+                      generate_training_examples()
+                    </code>
                   </div>
-                  <div className="bg-gray-700 rounded p-2">
-                    <p className="text-blue-200"><strong>New Domains:</strong></p>
-                    <p className="text-gray-300">Zero existing data → Complete ground-up effort</p>
+                </div>
+              </div>
+
+              {/* Arrow */}
+              <div className="flex-shrink-0">
+                <div className="text-[#58A6FF] text-4xl">→</div>
+              </div>
+
+              {/* Output */}
+              <div className="flex-1 max-w-xs">
+                <div className="bg-gradient-to-br from-[#3FB950]/20 to-[#10B981]/20 border border-[#3FB950]/50 rounded-xl p-6 h-full">
+                  <div className="text-center">
+                    <div className="text-4xl mb-3">📋</div>
+                    <h3 className="text-lg font-bold text-[#3FB950] mb-3">Training Dataset</h3>
+                    <div className="text-xs text-gray-300 space-y-1 text-left bg-[#3FB950]/5 rounded p-2">
+                      <div className="truncate">"Calculate..."</div>
+                      <div className="truncate">"What is..."</div>
+                      <div className="truncate">"How much..."</div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-green-900/20 border border-green-600 rounded-lg p-4">
-              <h3 className="text-xl font-semibold text-green-400 mb-3">✅ ToolBrain&apos;s Zero-Learn Solution</h3>
-              <p className="text-green-200 text-sm mb-3">
-                Generate unlimited, diverse, high-quality training examples automatically from just a task description:
+            {/* Mobile Layout */}
+            <div className="flex flex-col lg:hidden space-y-6">
+              <div className="text-center">
+                <div className="bg-gradient-to-br from-[#58A6FF]/20 to-[#4A90E2]/20 border border-[#58A6FF]/50 rounded-xl p-6 mx-auto max-w-sm">
+                  <div className="text-4xl mb-3">📝</div>
+                  <h3 className="text-lg font-bold text-[#58A6FF] mb-2">Task Description</h3>
+                  <p className="text-xs text-gray-400 mb-3">High-level requirements</p>
+                  <div className="border-t border-[#58A6FF]/20 pt-3">
+                    <div className="text-2xl mb-1">🛠️</div>
+                    <p className="text-xs text-gray-400">Available Tools</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center text-[#58A6FF] text-3xl">↓</div>
+
+              <div className="text-center">
+                <div className="bg-gradient-to-br from-[#7C3AED]/20 to-[#6366F1]/20 border border-[#7C3AED]/50 rounded-xl p-6 mx-auto max-w-sm">
+                  <div className="text-4xl mb-3">🧠</div>
+                  <h3 className="text-lg font-bold text-[#7C3AED] mb-2">LLM Curriculum Designer</h3>
+                  <code className="text-xs text-[#7C3AED] bg-[#7C3AED]/10 px-2 py-1 rounded">
+                    generate_training_examples()
+                  </code>
+                </div>
+              </div>
+
+              <div className="text-center text-[#58A6FF] text-3xl">↓</div>
+
+              <div className="text-center">
+                <div className="bg-gradient-to-br from-[#3FB950]/20 to-[#10B981]/20 border border-[#3FB950]/50 rounded-xl p-6 mx-auto max-w-sm">
+                  <div className="text-4xl mb-3">📋</div>
+                  <h3 className="text-lg font-bold text-[#3FB950] mb-3">Training Dataset</h3>
+                  <div className="text-xs text-gray-300 space-y-1 text-left bg-[#3FB950]/5 rounded p-2">
+                    <div>"Calculate..."</div>
+                    <div>"What is..."</div>
+                    <div>"How much..."</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* PHẦN 3: THE API IN ACTION - A FINANCE AGENT EXAMPLE */}
+        <div className="mb-20">
+          <h2 className="text-4xl font-bold text-[#E6EDF3] text-center mb-8">
+            How to Use It: Generating Tasks for a Finance Agent
+          </h2>
+          
+          <p className="text-lg text-gray-400 mb-12 text-center max-w-3xl mx-auto leading-relaxed">
+            Let's walk through an example. Imagine we want to train an agent to use a set of financial calculation tools.
+          </p>
+
+          {/* Code Example 1: Setup */}
+          <div className="mb-12">
+            <h3 className="text-2xl font-bold text-[#58A6FF] mb-4">Step 1: Setup</h3>
+            <p className="text-gray-400 mb-4">
+              First, we define our agent and its financial tools, then initialize the Brain.
+            </p>
+            <CodeBlock
+              language="python"
+            >
+{`from toolbrain import Brain, create_agent
+from my_finance_tools import (
+    calculate_compound_interest,
+    calculate_loan_payment,
+    # ... and other finance tools
+)
+
+# 1. Create an agent with a full set of tools
+finance_agent = create_agent(
+    model_id="Qwen/Qwen2.5-0.5B-Instruct",
+    tools=[
+        calculate_compound_interest,
+        calculate_loan_payment,
+        # ...
+    ],
+)
+
+# 2. Initialize the Brain
+brain = Brain(agent=finance_agent)`}
+            </CodeBlock>
+          </div>
+
+          {/* Code Example 2: Generation */}
+          <div className="mb-12">
+            <h3 className="text-2xl font-bold text-[#7C3AED] mb-4">Step 2: Generation</h3>
+            <p className="text-gray-400 mb-4">
+              Next, we write a high-level description of the tasks we want to generate. We then call 
+              <code className="bg-[#161B22] px-2 py-1 rounded text-[#7C3AED] mx-1">brain.generate_training_examples()</code> 
+              and pass in our description and other parameters to control the output.
+            </p>
+            <CodeBlock
+              language="python"
+            >
+{`# 3. Define the task description
+task_description = (
+    "Generate tasks to learn to use simple finance tools. "
+    "The prompts should include varied numeric inputs and realistic edge cases."
+)
+
+# 4. Generate the training examples!
+generated_examples = brain.generate_training_examples(
+    task_description=task_description,
+    num_examples=20,     # How many examples to create
+    min_tool_calls=2,    # Ensure tasks are multi-step
+    self_rank=True       # Use an LLM to rank the generated tasks for quality
+)
+
+# The output is a list of ready-to-use query strings
+print(generated_examples[0])
+# Expected output: "Calculate the monthly payment for a $250,000 loan over 30 years at a 6.5% annual rate, then find the compound interest on that payment over 5 years."`}
+            </CodeBlock>
+          </div>
+
+          {/* Code Example 3: Training */}
+          <div className="mb-12">
+            <h3 className="text-2xl font-bold text-[#3FB950] mb-4">Step 3: Training</h3>
+            <p className="text-gray-400 mb-4">
+              Finally, the generated examples can be used directly to train your agent.
+            </p>
+            <CodeBlock
+              language="python"
+            >
+{`# 5. Use the generated data for training
+training_dataset = [{"query": example} for example in generated_examples]
+brain.train(dataset=training_dataset)`}
+            </CodeBlock>
+          </div>
+        </div>
+
+        {/* Benefits Section */}
+        <div className="mb-20">
+          <h2 className="text-3xl font-bold text-[#E6EDF3] text-center mb-8">
+            Why Zero-Learn Task Generation?
+          </h2>
+          
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-gradient-to-br from-[#58A6FF]/10 to-[#4A90E2]/10 border border-[#58A6FF]/30 rounded-xl p-6">
+              <div className="text-3xl mb-4 text-center">⚡</div>
+              <h3 className="text-xl font-bold text-[#58A6FF] mb-3 text-center">Bootstrap Instantly</h3>
+              <p className="text-gray-300 text-sm text-center leading-relaxed">
+                Go from zero training data to a complete dataset in minutes, not hours or days of manual work.
               </p>
-              <ul className="text-green-200 text-sm space-y-1">
-                <li>• <strong>Instant generation:</strong> Thousands of examples in minutes, not months</li>
-                <li>• <strong>Perfect diversity:</strong> Systematic coverage of task variations and edge cases</li>
-                <li>• <strong>Cost effective:</strong> Eliminates expensive human annotation</li>
-                <li>• <strong>Adaptable:</strong> Easily customize for new domains and requirements</li>
-                <li>• <strong>Consistent quality:</strong> Uniform high-quality examples</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* The How: generate_training_examples Method */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">The "How": brain.generate_training_examples()</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              The <code className="bg-gray-700 px-2 py-1 rounded">brain.generate_training_examples()</code> method is ToolBrain&apos;s 
-              powerful automatic training data generation system. Here's the complete example from 
-              <code className="bg-gray-700 px-2 py-1 rounded">examples/04_generate_training_examples.py</code>:
-            </p>
-            
-            <CodeBlock language="python">
-{`#!/usr/bin/env python3
-"""
-Zero-Learn Task Generation Example
-Demonstrates automatic generation of diverse training examples
-"""
-
-from toolbrain import Brain
-from toolbrain.agents import CodeAgent
-from toolbrain.rewards import reward_llm_judge_via_ranking
-
-def generate_comprehensive_training_data():
-    """
-    Generate comprehensive training dataset for finance agent training.
-    """
-    
-    # Step 1: Initialize agent with finance tools
-    finance_agent = CodeAgent(
-        model="Qwen/Qwen2.5-3B-Instruct",
-        tools=[
-            "get_stock_price",
-            "get_company_info", 
-            "calculate_portfolio_value",
-            "analyze_risk_metrics",
-            "fetch_market_data",
-            "compute_financial_ratios",
-            "generate_investment_report",
-            "backtest_strategy",
-            "analyze_correlation",
-            "calculate_var"
-        ]
-    )
-    
-    # Step 2: Initialize Brain for training data generation
-    brain = Brain(
-        agent=finance_agent,
-        reward_func=reward_llm_judge_via_ranking,
-        enable_tool_retrieval=True,
-        learning_algorithm="GRPO"
-    )
-    
-    # Step 3: Generate basic training examples
-    print("Generating basic financial analysis examples...")
-    basic_examples = brain.generate_training_examples(
-        task_description="Perform basic financial analysis and stock evaluation",
-        num_examples=200,
-        difficulty_levels=["beginner", "intermediate"],
-        include_variations=True,
-        seed=42  # For reproducibility
-    )
-    
-    print(f"Generated {len(basic_examples)} basic examples")
-    
-    # Step 4: Generate advanced examples with specific focus areas
-    print("Generating advanced portfolio management examples...")
-    advanced_examples = brain.generate_training_examples(
-        task_description="Advanced portfolio management and risk analysis",
-        num_examples=150,
-        difficulty_levels=["advanced", "expert"],
-        focus_areas=[
-            "portfolio_optimization",
-            "risk_management", 
-            "multi_asset_analysis",
-            "derivatives_trading"
-        ],
-        include_edge_cases=True,
-        complexity_range=(0.7, 1.0)  # High complexity only
-    )
-    
-    print(f"Generated {len(advanced_examples)} advanced examples")
-    
-    # Step 5: Generate domain-specific examples
-    print("Generating specialized trading strategy examples...")
-    trading_examples = brain.generate_training_examples(
-        task_description="Develop and backtest systematic trading strategies",
-        num_examples=100,
-        difficulty_levels=["expert"],
-        domain_constraints={
-            "asset_classes": ["equities", "bonds", "commodities"],
-            "time_horizons": ["daily", "weekly", "monthly"],
-            "risk_levels": ["conservative", "moderate", "aggressive"]
-        },
-        require_tools=["backtest_strategy", "analyze_correlation", "calculate_var"],
-        min_tool_usage=3  # Require at least 3 tools per example
-    )
-    
-    print(f"Generated {len(trading_examples)} trading examples")
-    
-    # Step 6: Generate error handling and edge case examples
-    print("Generating error handling examples...")
-    error_examples = brain.generate_training_examples(
-        task_description="Handle errors and edge cases in financial analysis",
-        num_examples=75,
-        scenario_types=[
-            "missing_data",
-            "api_failures", 
-            "invalid_inputs",
-            "market_anomalies",
-            "calculation_errors"
-        ],
-        include_recovery_strategies=True,
-        error_injection_rate=0.8  # 80% of examples include errors
-    )
-    
-    print(f"Generated {len(error_examples)} error handling examples")
-    
-    # Step 7: Combine and analyze the complete dataset
-    complete_dataset = basic_examples + advanced_examples + trading_examples + error_examples
-    
-    print(f"\\n=== Complete Dataset Summary ===")
-    print(f"Total examples: {len(complete_dataset)}")
-    print(f"Difficulty distribution:")
-    
-    difficulty_counts = {}
-    for example in complete_dataset:
-        difficulty = example.metadata.get('difficulty', 'unknown')
-        difficulty_counts[difficulty] = difficulty_counts.get(difficulty, 0) + 1
-    
-    for difficulty, count in difficulty_counts.items():
-        print(f"  {difficulty}: {count} examples")
-    
-    # Step 8: Quality analysis
-    print(f"\\nDataset Quality Metrics:")
-    print(f"Average complexity: {sum(ex.complexity_score for ex in complete_dataset) / len(complete_dataset):.2f}")
-    print(f"Tool usage coverage: {len(set(tool for ex in complete_dataset for tool in ex.required_tools))}")
-    print(f"Unique task variations: {len(set(ex.task_hash for ex in complete_dataset))}")
-    
-    # Step 9: Save dataset for training
-    brain.save_dataset(complete_dataset, "comprehensive_finance_training.json")
-    print(f"\\nDataset saved to comprehensive_finance_training.json")
-    
-    return complete_dataset
-
-def analyze_generated_examples(dataset):
-    """Analyze the diversity and quality of generated examples."""
-    
-    print("\\n=== Dataset Analysis ===")
-    
-    # Complexity distribution
-    complexities = [ex.complexity_score for ex in dataset]
-    print(f"Complexity range: {min(complexities):.2f} - {max(complexities):.2f}")
-    
-    # Tool usage patterns
-    tool_usage = {}
-    for example in dataset:
-        for tool in example.required_tools:
-            tool_usage[tool] = tool_usage.get(tool, 0) + 1
-    
-    print(f"\\nMost used tools:")
-    for tool, count in sorted(tool_usage.items(), key=lambda x: x[1], reverse=True)[:5]:
-        print(f"  {tool}: {count} examples")
-    
-    # Task type distribution
-    task_types = {}
-    for example in dataset:
-        task_type = example.metadata.get('task_type', 'general')
-        task_types[task_type] = task_types.get(task_type, 0) + 1
-    
-    print(f"\\nTask type distribution:")
-    for task_type, count in task_types.items():
-        print(f"  {task_type}: {count} examples")
-
-if __name__ == "__main__":
-    # Generate comprehensive training dataset
-    dataset = generate_comprehensive_training_data()
-    
-    # Analyze the generated dataset
-    analyze_generated_examples(dataset)
-    
-    print("\\nTraining data generation complete!")
-    print("Ready to train your finance agent with comprehensive, diverse examples.")`}
-            </CodeBlock>
-          </div>
-        </section>
-
-        {/* Key Parameters Deep Dive */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Key Parameters Deep Dive</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-6">
-              The <code className="bg-gray-700 px-2 py-1 rounded">generate_training_examples()</code> method offers powerful 
-              parameters to control the generation process:
-            </p>
-
-            <div className="space-y-8">
-              <div className="bg-blue-900/20 border border-blue-600 rounded-lg p-6">
-                <h3 className="text-xl font-semibold text-blue-400 mb-4">🎯 task_description</h3>
-                <p className="text-blue-200 mb-4">
-                  The core parameter that defines what types of tasks to generate. ToolBrain uses this to create relevant, diverse examples.
-                </p>
-                
-                <CodeBlock language="python">
-{`# Basic task description
-basic_examples = brain.generate_training_examples(
-    task_description="Analyze stock performance and provide investment recommendations"
-)
-
-# Detailed task description with specific requirements
-detailed_examples = brain.generate_training_examples(
-    task_description="""
-    Perform comprehensive financial portfolio analysis including:
-    - Individual stock evaluation with fundamental metrics
-    - Portfolio risk assessment using VaR and beta calculations  
-    - Correlation analysis between assets
-    - Optimization recommendations for risk-adjusted returns
-    - Compliance checks for regulatory requirements
-    """
-)
-
-# Domain-specific task descriptions
-trading_examples = brain.generate_training_examples(
-    task_description="Develop algorithmic trading strategies with backtesting and risk controls"
-)
-
-research_examples = brain.generate_training_examples(
-    task_description="Conduct market research and competitive analysis for investment decisions"
-)`}
-                </CodeBlock>
-              </div>
-
-              <div className="bg-green-900/20 border border-green-600 rounded-lg p-6">
-                <h3 className="text-xl font-semibold text-green-400 mb-4">📊 num_examples & difficulty_levels</h3>
-                <p className="text-green-200 mb-4">
-                  Control the quantity and complexity distribution of generated examples.
-                </p>
-                
-                <CodeBlock language="python">
-{`# Control quantity and difficulty
-examples = brain.generate_training_examples(
-    task_description="Financial analysis tasks",
-    num_examples=500,                           # Generate 500 examples
-    difficulty_levels=["beginner", "intermediate", "advanced", "expert"],
-    difficulty_distribution={                   # Custom distribution
-        "beginner": 0.3,      # 30% beginner
-        "intermediate": 0.4,  # 40% intermediate  
-        "advanced": 0.2,      # 20% advanced
-        "expert": 0.1         # 10% expert
-    }
-)
-
-# Focused on specific difficulty
-expert_examples = brain.generate_training_examples(
-    task_description="Complex multi-asset portfolio optimization",
-    num_examples=100,
-    difficulty_levels=["expert"],               # Expert only
-    complexity_range=(0.8, 1.0)               # High complexity
-)`}
-                </CodeBlock>
-              </div>
-
-              <div className="bg-purple-900/20 border border-purple-600 rounded-lg p-6">
-                <h3 className="text-xl font-semibold text-purple-400 mb-4">🔧 focus_areas & domain_constraints</h3>
-                <p className="text-purple-200 mb-4">
-                  Target specific capabilities and enforce domain-specific requirements.
-                </p>
-                
-                <CodeBlock language="python">
-{`# Focus on specific capabilities
-focused_examples = brain.generate_training_examples(
-    task_description="Advanced portfolio management",
-    focus_areas=[
-        "portfolio_optimization",     # Portfolio theory application
-        "risk_management",           # Risk assessment and mitigation
-        "derivatives_pricing",       # Options and futures
-        "behavioral_finance",        # Psychological factors
-        "esg_analysis"              # Environmental/social/governance
-    ],
-    num_examples=200
-)
-
-# Domain constraints for realistic scenarios
-constrained_examples = brain.generate_training_examples(
-    task_description="Institutional portfolio management",
-    domain_constraints={
-        "client_types": ["pension_funds", "insurance", "endowments"],
-        "asset_classes": ["equities", "bonds", "alternatives", "commodities"],
-        "geographic_regions": ["us", "europe", "asia_pacific", "emerging"],
-        "investment_horizons": ["short_term", "medium_term", "long_term"],
-        "regulatory_environments": ["sec", "mifid", "basel_iii"]
-    },
-    num_examples=150
-)`}
-                </CodeBlock>
-              </div>
-
-              <div className="bg-orange-900/20 border border-orange-600 rounded-lg p-6">
-                <h3 className="text-xl font-semibold text-orange-400 mb-4">⚠️ Error Handling & Edge Cases</h3>
-                <p className="text-orange-200 mb-4">
-                  Generate examples that test agent robustness and error handling capabilities.
-                </p>
-                
-                <CodeBlock language="python">
-{`# Include edge cases and error scenarios
-robust_examples = brain.generate_training_examples(
-    task_description="Robust financial analysis with error handling",
-    num_examples=100,
-    include_edge_cases=True,
-    error_scenarios=[
-        "missing_data",              # Missing stock prices
-        "api_timeouts",             # Service unavailability  
-        "invalid_symbols",          # Non-existent tickers
-        "market_crashes",           # Extreme market conditions
-        "data_inconsistencies",     # Conflicting data sources
-        "calculation_overflows",    # Numerical edge cases
-    ],
-    error_injection_rate=0.6,      # 60% of examples include errors
-    require_error_recovery=True    # Must demonstrate error handling
-)
-
-# Stress testing scenarios
-stress_examples = brain.generate_training_examples(
-    task_description="Handle extreme market conditions and system failures",
-    scenario_types=[
-        "black_swan_events",        # Rare, high-impact events
-        "flash_crashes",            # Rapid market declines
-        "liquidity_crises",         # Low trading volume
-        "currency_devaluations",    # FX volatility
-        "regulatory_changes"        # Sudden rule changes
-    ],
-    num_examples=50,
-    stress_test_mode=True
-)`}
-                </CodeBlock>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Generation Strategies */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Advanced Generation Strategies</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-6">
-              ToolBrain employs multiple sophisticated strategies to ensure comprehensive coverage:
-            </p>
-
-            <div className="space-y-6">
-              <div>
-                <h3 className="text-xl font-semibold text-blue-400 mb-3">🎲 Systematic Variation</h3>
-                <p className="text-gray-300 mb-3">
-                  Generates examples by systematically varying key parameters to ensure complete coverage.
-                </p>
-                <CodeBlock language="python">
-{`# Systematic parameter variation
-systematic_examples = brain.generate_training_examples(
-    task_description="Portfolio optimization across different scenarios",
-    variation_strategy="systematic",
-    parameter_space={
-        "portfolio_size": [10, 25, 50, 100, 200],
-        "risk_tolerance": ["conservative", "moderate", "aggressive"],
-        "time_horizon": ["1y", "3y", "5y", "10y", "20y"],
-        "rebalancing_frequency": ["monthly", "quarterly", "annually"],
-        "constraints": ["long_only", "long_short", "sector_neutral"]
-    },
-    coverage_target=0.95  # Cover 95% of parameter combinations
-)`}
-                </CodeBlock>
-              </div>
-
-              <div>
-                <h3 className="text-xl font-semibold text-green-400 mb-3">🧠 LLM-Guided Generation</h3>
-                <p className="text-gray-300 mb-3">
-                  Uses advanced language models to generate creative, realistic scenarios.
-                </p>
-                <CodeBlock language="python">
-{`# LLM-guided creative generation
-creative_examples = brain.generate_training_examples(
-    task_description="Creative investment strategies and novel approaches",
-    generation_strategy="llm_guided",
-    creativity_level=0.8,           # High creativity
-    guidance_model="gpt-4-turbo",   # Advanced reasoning model
-    prompt_templates=[
-        "Design an innovative investment strategy for {market_condition}",
-        "Create a risk management approach for {unusual_scenario}",
-        "Develop portfolio optimization for {specific_constraint}"
-    ],
-    num_examples=100
-)`}
-                </CodeBlock>
-              </div>
-
-              <div>
-                <h3 className="text-xl font-semibold text-purple-400 mb-3">📈 Progressive Complexity</h3>
-                <p className="text-gray-300 mb-3">
-                  Builds complexity gradually, creating learning progressions from simple to advanced.
-                </p>
-                <CodeBlock language="python">
-{`# Progressive complexity building
-progressive_examples = brain.generate_training_examples(
-    task_description="Master portfolio management from basics to advanced",
-    generation_strategy="progressive",
-    complexity_progression=[
-        {"level": "basic", "examples": 100, "complexity": (0.1, 0.3)},
-        {"level": "intermediate", "examples": 150, "complexity": (0.3, 0.6)},
-        {"level": "advanced", "examples": 100, "complexity": (0.6, 0.8)},
-        {"level": "expert", "examples": 50, "complexity": (0.8, 1.0)}
-    ],
-    skill_dependencies=True,        # Ensure prerequisite skills
-    knowledge_graph=True           # Build on previous concepts
-)`}
-                </CodeBlock>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Quality Control */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Quality Control & Validation</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              ToolBrain includes comprehensive quality control mechanisms to ensure generated examples are high-quality and useful:
-            </p>
-
-            <CodeBlock language="python">
-{`# Quality-controlled generation with validation
-quality_examples = brain.generate_training_examples(
-    task_description="High-quality financial analysis examples",
-    num_examples=200,
-    
-    # Quality control settings
-    quality_control={
-        "min_quality_score": 0.8,           # Minimum quality threshold
-        "diversity_threshold": 0.7,         # Ensure diversity
-        "relevance_check": True,            # Verify task relevance
-        "feasibility_check": True,          # Ensure realistic scenarios
-        "consistency_validation": True,     # Check internal consistency
-    },
-    
-    # Automatic validation
-    validation_strategy="multi_stage",
-    validation_stages=[
-        {
-            "name": "syntax_check",
-            "validator": "rule_based",
-            "criteria": ["valid_parameters", "logical_structure"]
-        },
-        {
-            "name": "semantic_validation", 
-            "validator": "llm_based",
-            "model": "gpt-3.5-turbo",
-            "criteria": ["task_alignment", "realistic_scenario"]
-        },
-        {
-            "name": "expert_review",
-            "validator": "human_in_loop",
-            "sample_rate": 0.1,  # Review 10% of examples
-            "criteria": ["domain_accuracy", "practical_utility"]
-        }
-    ],
-    
-    # Iterative improvement
-    refinement_iterations=3,                # Refine based on validation
-    feedback_incorporation=True,            # Learn from validation feedback
-    quality_tracking=True                   # Track quality metrics over time
-)
-
-# Quality metrics reporting
-quality_report = brain.get_generation_quality_report()
-print(f"Average quality score: {quality_report.avg_quality:.3f}")
-print(f"Diversity index: {quality_report.diversity_index:.3f}")
-print(f"Validation pass rate: {quality_report.validation_pass_rate:.3f}")
-print(f"Expert approval rate: {quality_report.expert_approval_rate:.3f}")`}
-            </CodeBlock>
-
-            <div className="mt-6">
-              <h3 className="text-xl font-semibold text-blue-400 mb-3">Automatic Quality Metrics</h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <h4 className="font-semibold text-green-400 mb-2">Diversity Metrics</h4>
-                  <ul className="text-gray-300 text-sm space-y-1">
-                    <li>• Task variation coverage</li>
-                    <li>• Parameter space exploration</li>
-                    <li>• Unique scenario count</li>
-                    <li>• Tool usage distribution</li>
-                  </ul>
-                </div>
-                <div className="bg-gray-700 rounded-lg p-4">
-                  <h4 className="font-semibold text-blue-400 mb-2">Quality Metrics</h4>
-                  <ul className="text-gray-300 text-sm space-y-1">
-                    <li>• Logical consistency score</li>
-                    <li>• Domain expertise rating</li>
-                    <li>• Practical utility measure</li>
-                    <li>• Training effectiveness score</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Performance Impact */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Performance Impact</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-6">
-              Zero-learn task generation dramatically accelerates the training process:
-            </p>
-
-            <div className="grid md:grid-cols-3 gap-6 mb-6">
-              <div className="bg-red-900/20 border border-red-600 rounded-lg p-4 text-center">
-                <h3 className="text-lg font-semibold text-red-400 mb-3">Manual Collection</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="text-gray-300">Time: <span className="text-red-400">3-6 months</span></div>
-                  <div className="text-gray-300">Cost: <span className="text-red-400">$50K-$200K</span></div>
-                  <div className="text-gray-300">Examples: <span className="text-red-400">1K-5K</span></div>
-                  <div className="text-gray-300">Quality: <span className="text-red-400">Variable</span></div>
-                  <div className="text-gray-300">Diversity: <span className="text-red-400">Limited</span></div>
-                </div>
-              </div>
-
-              <div className="bg-yellow-900/20 border border-yellow-600 rounded-lg p-4 text-center">
-                <h3 className="text-lg font-semibold text-yellow-400 mb-3">Synthetic Data</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="text-gray-300">Time: <span className="text-yellow-400">1-2 weeks</span></div>
-                  <div className="text-gray-300">Cost: <span className="text-yellow-400">$5K-$20K</span></div>
-                  <div className="text-gray-300">Examples: <span className="text-yellow-400">10K-50K</span></div>
-                  <div className="text-gray-300">Quality: <span className="text-yellow-400">Moderate</span></div>
-                  <div className="text-gray-300">Diversity: <span className="text-yellow-400">Good</span></div>  
-                </div>
-              </div>
-
-              <div className="bg-green-900/20 border border-green-600 rounded-lg p-4 text-center">
-                <h3 className="text-lg font-semibold text-green-400 mb-3">ToolBrain Generation</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="text-gray-300">Time: <span className="text-green-400">Hours</span></div>
-                  <div className="text-gray-300">Cost: <span className="text-green-400">$100-$500</span></div>
-                  <div className="text-gray-300">Examples: <span className="text-green-400">Unlimited</span></div>
-                  <div className="text-gray-300">Quality: <span className="text-green-400">High</span></div>
-                  <div className="text-gray-300">Diversity: <span className="text-green-400">Excellent</span></div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-blue-900/20 border border-blue-600 rounded-lg p-4">
-              <h4 className="font-semibold text-blue-400 mb-2">🚀 Key Advantages</h4>
-              <ul className="text-blue-200 text-sm space-y-1">
-                <li>• <strong>100x faster:</strong> Hours vs months for data collection</li>
-                <li>• <strong>10x cheaper:</strong> Eliminates expensive human annotation</li>
-                <li>• <strong>Unlimited scale:</strong> Generate as many examples as needed</li>
-                <li>• <strong>Perfect diversity:</strong> Systematic coverage of all scenarios</li>
-                <li>• <strong>Consistent quality:</strong> Uniform high standards across all examples</li>
-                <li>• <strong>Instant adaptation:</strong> Quickly adapt to new domains or requirements</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* Best Practices */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Best Practices</h2>
-          <div className="bg-gray-800 rounded-lg p-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-lg font-semibold text-green-400 mb-3">✅ Do's</h3>
-                <ul className="text-green-200 text-sm space-y-2">
-                  <li>• Start with clear, specific task descriptions</li>
-                  <li>• Use progressive complexity for better learning</li>
-                  <li>• Include error scenarios and edge cases</li>
-                  <li>• Validate generated examples with quality controls</li>
-                  <li>• Balance different difficulty levels appropriately</li>
-                  <li>• Monitor generation quality metrics</li>
-                  <li>• Iterate and refine based on training results</li>
-                </ul>
-              </div>
-              
-              <div>
-                <h3 className="text-lg font-semibold text-red-400 mb-3">❌ Don&apos;ts</h3>
-                <ul className="text-red-200 text-sm space-y-2">
-                  <li>• Don&apos;t use vague or overly broad task descriptions</li>
-                  <li>• Don&apos;t generate only easy or only hard examples</li>
-                  <li>• Don&apos;t skip quality validation steps</li>
-                  <li>• Don&apos;t ignore domain-specific constraints</li>
-                  <li>• Don&apos;t assume all generated examples are perfect</li>
-                  <li>• Don&apos;t neglect diversity in generated scenarios</li>
-                  <li>• Don&apos;t forget to include realistic error conditions</li>
-                </ul>
-              </div>
             </div>
             
-            <div className="mt-6 p-4 bg-yellow-900/20 border border-yellow-600 rounded-lg">
-              <h4 className="font-semibold text-yellow-400 mb-2">💡 Pro Tips</h4>
-              <ul className="text-yellow-200 text-sm space-y-1">
-                <li>• Use task descriptions that match your deployment scenarios</li>
-                <li>• Generate 10-20x more examples than traditional datasets</li>
-                <li>• Combine multiple generation strategies for maximum diversity</li>
-                <li>• Regularly refresh training data with new generated examples</li>
-              </ul>
+            <div className="bg-gradient-to-br from-[#7C3AED]/10 to-[#6366F1]/10 border border-[#7C3AED]/30 rounded-xl p-6">
+              <div className="text-3xl mb-4 text-center">🎯</div>
+              <h3 className="text-xl font-bold text-[#7C3AED] mb-3 text-center">Tool-Aligned Tasks</h3>
+              <p className="text-gray-300 text-sm text-center leading-relaxed">
+                Generated examples are specifically designed to exercise your agent's available tools effectively.
+              </p>
+            </div>
+            
+            <div className="bg-gradient-to-br from-[#3FB950]/10 to-[#10B981]/10 border border-[#3FB950]/30 rounded-xl p-6">
+              <div className="text-3xl mb-4 text-center">🔄</div>
+              <h3 className="text-xl font-bold text-[#3FB950] mb-3 text-center">Diverse & Realistic</h3>
+              <p className="text-gray-300 text-sm text-center leading-relaxed">
+                LLM-generated tasks include edge cases and varied scenarios you might not think of manually.
+              </p>
             </div>
           </div>
-        </section>
+        </div>
+
+        {/* CALL TO ACTION */}
+        <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-12 text-center">
+          <h2 className="text-3xl font-bold text-[#E6EDF3] mb-6">
+            Ready to Generate Your Training Data?
+          </h2>
+          <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+            Skip the tedious manual work and let ToolBrain create diverse, realistic training examples for your agent.
+          </p>
+          
+          <a 
+            href="/get-started/quickstart"
+            className="inline-block bg-[#58A6FF] hover:bg-[#4A90E2] text-white px-10 py-4 rounded-lg text-lg font-semibold transition-colors duration-200 shadow-lg hover:shadow-xl"
+          >
+            Get Started Now
+          </a>
+        </div>
+
       </div>
     </Layout>
   );

@@ -2,428 +2,331 @@
 
 import Layout from '@/components/Layout';
 import CodeBlock from '@/components/CodeBlock';
+import Image from 'next/image';
 
 export default function FlexibleRewards() {
+  const rewardEfficiencyCode = `from toolbrain.core_types import Trace
+
+def reward_step_efficiency(trace: Trace, **kwargs) -> float:
+    """Rewards higher for shorter traces."""
+    num_turns = len(trace)
+    if num_turns <= 3: # Ideal number of turns
+        return 1.0
+    else:
+        # Penalize for each step over the ideal
+        penalty = (num_turns - 3) * 0.2
+        return max(0.0, 1.0 - penalty)`;
+
+  const userDefinedUsage = `# Simply pass your function to the Brain
+brain = Brain(
+    agent=my_agent,
+    reward_func=reward_step_efficiency,
+    ...
+)`;
+
+  const llmJudgeUsage = `from toolbrain.rewards import reward_llm_judge_via_ranking
+
+# Simply assign the built-in judge function
+brain = Brain(
+    agent=my_agent,
+    reward_func=reward_llm_judge_via_ranking,
+    ...
+)`;
+
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4">Guide: Flexible Rewards</h1>
-          <p className="text-gray-300 text-lg">
-            Discover ToolBrain's powerful reward system that supports both user-defined functions and LLM-as-a-judge approaches for training intelligent agents.
-          </p>
+      <div className="max-w-6xl mx-auto">
+        {/* PHẦN 1: THE CHALLENGE OF REWARD DESIGN */}
+        <div className="text-center mb-20">
+          <h1 className="text-5xl font-bold text-[#E6EDF3] mb-8">
+            Flexible, Hybrid Rewards
+          </h1>
+          
+          <div className="max-w-4xl mx-auto text-lg text-gray-400 leading-relaxed space-y-6">
+            <p>
+              The reward function is the single most important component in a Reinforcement Learning system—it defines the goal. 
+              However, designing a good reward function is notoriously difficult.
+            </p>
+            
+            <div className="grid md:grid-cols-2 gap-8 my-12">
+              <div className="bg-gradient-to-br from-[#58A6FF]/10 to-[#4A90E2]/10 border border-[#58A6FF]/30 rounded-xl p-6">
+                <div className="text-3xl mb-4">📏</div>
+                <h3 className="text-xl font-bold text-[#58A6FF] mb-3">User-Defined Rewards</h3>
+                <div className="space-y-2">
+                  <p className="text-[#3FB950] text-sm leading-relaxed flex items-center gap-2">
+                    <span className="text-[#3FB950]">✓</span> Precise and deterministic control
+                  </p>
+                  <p className="text-[#3FB950] text-sm leading-relaxed flex items-center gap-2">
+                    <span className="text-[#3FB950]">✓</span> Fast execution and low latency
+                  </p>
+                  <p className="text-[#3FB950] text-sm leading-relaxed flex items-center gap-2">
+                    <span className="text-[#3FB950]">✓</span> Perfect for objective criteria
+                  </p>
+                </div>
+              </div>
+              
+              <div className="bg-gradient-to-br from-[#7C3AED]/10 to-[#6366F1]/10 border border-[#7C3AED]/30 rounded-xl p-6">
+                <div className="text-3xl mb-4">🤖</div>
+                <h3 className="text-xl font-bold text-[#7C3AED] mb-3">LLM-as-a-Judge Rewards</h3>
+                <div className="space-y-2">
+                  <p className="text-[#3FB950] text-sm leading-relaxed flex items-center gap-2">
+                    <span className="text-[#3FB950]">✓</span> Handles complex semantic tasks
+                  </p>
+                  <p className="text-[#3FB950] text-sm leading-relaxed flex items-center gap-2">
+                    <span className="text-[#3FB950]">✓</span> Understands nuanced quality
+                  </p>
+                  <p className="text-[#3FB950] text-sm leading-relaxed flex items-center gap-2">
+                    <span className="text-[#3FB950]">✓</span> Scales with task complexity
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-gradient-to-r from-[#3FB950]/10 to-[#10B981]/10 border border-[#3FB950]/30 rounded-xl p-6">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="text-2xl">🚀</div>
+                <h3 className="text-xl font-bold text-[#3FB950]">ToolBrain's Hybrid Approach</h3>
+              </div>
+              <p className="text-xl font-semibold text-center text-[#E6EDF3]">
+                Combines the precision of user-defined functions with the intelligence of LLM judges, 
+                automatically adapting to your specific needs for optimal performance.
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Overview */}
-        <section className="mb-12">
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              Effective reward engineering is crucial for training high-quality agents. ToolBrain provides a flexible reward system 
-              that accommodates different evaluation approaches, from simple rule-based functions to sophisticated LLM-based judgments.
+        {/* PHẦN 2: PATH 1 - USER-DEFINED REWARDS */}
+        <div className="mb-20">
+          <h2 className="text-4xl font-bold text-[#E6EDF3] mb-8">
+            Path 1: User-Defined Rewards for Precise Control
+          </h2>
+          
+          <p className="text-lg text-gray-400 mb-8 leading-relaxed">
+            For tasks with clear, objective success criteria, nothing beats a simple Python function. 
+            ToolBrain allows you to provide any Python callable as a reward function. It will automatically 
+            receive the agent's Execution Trace, giving you full access to the agent's thoughts, actions, 
+            and results to implement your custom logic.
+          </p>
+
+          <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-8 mb-8">
+            <p className="text-lg text-[#58A6FF] mb-6 font-semibold">
+              For example, here is a built-in reward function that encourages the agent to be more efficient:
             </p>
             
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-blue-900/20 border border-blue-600 rounded-lg p-4">
-                <h3 className="text-xl font-semibold text-blue-400 mb-3">🎯 User-Defined Functions</h3>
-                <p className="text-blue-200 text-sm">
-                  Create custom reward functions based on domain expertise and specific task requirements. 
-                  Perfect for well-defined metrics and performance criteria.
+            <CodeBlock language="python" filename="reward_efficiency.py">
+              {rewardEfficiencyCode}
+            </CodeBlock>
+          </div>
+
+          <div className="bg-[#161B22] border border-[#30363D] rounded-lg p-6">
+            <h4 className="text-xl font-bold text-[#3FB950] mb-4 flex items-center gap-2">
+              <span className="text-2xl">💡</span>
+              Usage
+            </h4>
+            <CodeBlock language="python" filename="usage_example.py">
+              {userDefinedUsage}
+            </CodeBlock>
+          </div>
+        </div>
+
+        {/* PHẦN 3: PATH 2 - LLM-AS-A-JUDGE */}
+        <div className="mb-20">
+          <h2 className="text-4xl font-bold text-[#E6EDF3] mb-8">
+            Path 2: LLM-as-a-Judge for Semantic Tasks
+          </h2>
+          
+          <p className="text-lg text-gray-400 mb-8 leading-relaxed">
+            What if the goal is subjective, like "is this summary good?" For these tasks, ToolBrain provides 
+            a powerful, built-in ranking-based LLM-as-a-Judge.
+          </p>
+          
+          <p className="text-lg text-gray-400 mb-12 leading-relaxed">
+            Instead of asking an LLM for an unreliable absolute score, our judge shows the LLM multiple agent 
+            attempts (Traces) and asks it to rank them from best to worst. This relative comparison is a much 
+            easier and more consistent task for LLMs, resulting in a more reliable reward signal.
+          </p>
+
+          {/* VISUAL DIAGRAM */}
+          <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-12 mb-8">
+            <h3 className="text-2xl font-bold text-[#E6EDF3] text-center mb-8">
+              LLM-as-a-Judge Ranking Process
+            </h3>
+            
+            <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12">
+              {/* Step 1: Multiple Traces */}
+              <div className="flex flex-col items-center">
+                <h4 className="text-lg font-semibold text-[#58A6FF] mb-4">Multiple Agent Attempts</h4>
+                <div className="flex flex-col space-y-3">
+                  <div className="bg-[#0D1117] border border-[#30363D] rounded-lg p-4 hover:border-[#58A6FF]/50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="text-2xl">📝</div>
+                      <span className="text-[#E6EDF3] font-medium">Trace A</span>
+                    </div>
+                  </div>
+                  <div className="bg-[#0D1117] border border-[#30363D] rounded-lg p-4 hover:border-[#58A6FF]/50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="text-2xl">📝</div>
+                      <span className="text-[#E6EDF3] font-medium">Trace B</span>
+                    </div>
+                  </div>
+                  <div className="bg-[#0D1117] border border-[#30363D] rounded-lg p-4 hover:border-[#58A6FF]/50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="text-2xl">📝</div>
+                      <span className="text-[#E6EDF3] font-medium">Trace C</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Arrow 1 */}
+              <div className="flex justify-center">
+                <div className="hidden lg:block">
+                  <svg className="w-12 h-8 text-[#58A6FF]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z"/>
+                  </svg>
+                </div>
+                <div className="lg:hidden">
+                  <svg className="w-8 h-12 text-[#58A6FF]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M1 13.025l2.828-2.847 6.176 6.176v-16.354h3.992v16.354l6.176-6.176 2.828 2.847-11 10.975z"/>
+                  </svg>
+                </div>
+              </div>
+
+              {/* Step 2: LLM Judge */}
+              <div className="flex flex-col items-center">
+                <h4 className="text-lg font-semibold text-[#7C3AED] mb-4">LLM Judge</h4>
+                <div className="bg-gradient-to-br from-[#7C3AED]/20 to-[#58A6FF]/20 border-2 border-[#7C3AED] rounded-xl p-6">
+                  <div className="text-center">
+                    <div className="text-4xl mb-3">⚖️</div>
+                    <h4 className="text-xl font-bold text-[#7C3AED]">LLM Judge</h4>
+                    <p className="text-sm text-gray-300 mt-2">Comparative<br/>Ranking</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Arrow 2 */}
+              <div className="flex justify-center">
+                <div className="hidden lg:block">
+                  <svg className="w-12 h-8 text-[#58A6FF]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z"/>
+                  </svg>
+                </div>
+                <div className="lg:hidden">
+                  <svg className="w-8 h-12 text-[#58A6FF]" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M1 13.025l2.828-2.847 6.176 6.176v-16.354h3.992v16.354l6.176-6.176 2.828 2.847-11 10.975z"/>
+                  </svg>
+                </div>
+              </div>
+
+              {/* Step 3: Ranking */}
+              <div className="flex flex-col items-center">
+                <h4 className="text-lg font-semibold text-[#3FB950] mb-4">Ranking Results</h4>
+                <div className="flex flex-col space-y-3">
+                  <div className="bg-gradient-to-r from-[#FFD700]/20 to-[#FFA500]/20 border border-[#FFD700] rounded-lg p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="text-2xl">🥇</div>
+                      <span className="text-[#E6EDF3] font-medium">Trace B</span>
+                      <span className="text-[#3FB950] font-bold">1.0</span>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-r from-[#C0C0C0]/20 to-[#A0A0A0]/20 border border-[#C0C0C0] rounded-lg p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="text-2xl">🥈</div>
+                      <span className="text-[#E6EDF3] font-medium">Trace A</span>
+                      <span className="text-[#58A6FF] font-bold">0.5</span>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-r from-[#CD7F32]/20 to-[#B87333]/20 border border-[#CD7F32] rounded-lg p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="text-2xl">🥉</div>
+                      <span className="text-[#E6EDF3] font-medium">Trace C</span>
+                      <span className="text-[#F85149] font-bold">0.0</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-[#161B22] border border-[#30363D] rounded-lg p-6">
+            <h4 className="text-xl font-bold text-[#3FB950] mb-4 flex items-center gap-2">
+              <span className="text-2xl">💡</span>
+              Usage
+            </h4>
+            <CodeBlock language="python" filename="llm_judge_usage.py">
+              {llmJudgeUsage}
+            </CodeBlock>
+          </div>
+        </div>
+
+        {/* PHẦN 4: THE HYBRID POWER */}
+        <div className="mb-20">
+          <h2 className="text-4xl font-bold text-[#E6EDF3] mb-8">
+            The Hybrid Power: A Unified Interface
+          </h2>
+          
+          <p className="text-lg text-gray-400 mb-8 leading-relaxed">
+            You might wonder how the Brain can seamlessly handle both a simple function that processes one trace 
+            and a complex judge that processes a batch of traces.
+          </p>
+          
+          <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-8">
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+              <div>
+                <h3 className="text-2xl font-bold text-[#58A6FF] mb-4">
+                  RewardFunctionWrapper
+                </h3>
+                <p className="text-gray-300 leading-relaxed mb-6">
+                  This is handled by an internal component called the <span className="text-[#58A6FF] font-semibold">RewardFunctionWrapper</span>. 
+                  It automatically inspects your provided function and adapts the calling strategy accordingly.
+                </p>
+                <p className="text-gray-300 leading-relaxed">
+                  This means you can focus solely on your reward logic, and ToolBrain ensures it integrates 
+                  perfectly into the training loop. You can even create your own complex, batch-aware reward functions.
                 </p>
               </div>
               
-              <div className="bg-purple-900/20 border border-purple-600 rounded-lg p-4">
-                <h3 className="text-xl font-semibold text-purple-400 mb-3">🤖 LLM-as-a-Judge</h3>
-                <p className="text-purple-200 text-sm">
-                  Leverage large language models to evaluate agent performance using natural language criteria. 
-                  Ideal for complex, subjective tasks where rules are hard to define.
-                </p>
+              <div className="relative">
+                <div className="bg-gradient-to-br from-[#58A6FF]/20 to-[#7C3AED]/20 border-2 border-[#58A6FF] rounded-xl p-6 text-center">
+                  <div className="text-4xl mb-4">🔄</div>
+                  <h4 className="text-xl font-bold text-[#58A6FF] mb-2">Automatic</h4>
+                  <h4 className="text-xl font-bold text-[#7C3AED] mb-4">Adaptation</h4>
+                  <div className="space-y-2 text-sm text-gray-300">
+                    <div className="flex items-center justify-center gap-2">
+                      <span className="w-2 h-2 bg-[#3FB950] rounded-full"></span>
+                      <span>Single trace functions</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2">
+                      <span className="w-2 h-2 bg-[#58A6FF] rounded-full"></span>
+                      <span>Batch processing functions</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2">
+                      <span className="w-2 h-2 bg-[#7C3AED] rounded-full"></span>
+                      <span>Custom reward logic</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* User-Defined Functions */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">User-Defined Reward Functions</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              ToolBrain comes with built-in reward functions that you can use directly or customize for your specific needs. 
-              Here's an example from <code className="bg-gray-700 px-2 py-1 rounded">toolbrain/rewards.py</code>:
-            </p>
-            
-            <CodeBlock language="python">
-{`def reward_step_efficiency(trajectory, **kwargs):
-    """
-    Reward function that evaluates agent efficiency based on the number of steps
-    taken to complete a task. Encourages agents to solve problems efficiently.
-    
-    Args:
-        trajectory: The agent's execution trajectory containing steps and outcomes
-        **kwargs: Additional parameters for customization
-        
-    Returns:
-        float: Reward score between 0.0 and 1.0
-    """
-    if not trajectory or not trajectory.steps:
-        return 0.0
-    
-    # Get the number of steps taken
-    num_steps = len(trajectory.steps)
-    
-    # Check if the task was completed successfully
-    success = trajectory.final_outcome and trajectory.final_outcome.success
-    
-    if not success:
-        # Penalize failed attempts
-        return 0.0
-    
-    # Define efficiency thresholds
-    optimal_steps = kwargs.get('optimal_steps', 3)
-    max_acceptable_steps = kwargs.get('max_steps', 10)
-    
-    if num_steps <= optimal_steps:
-        # Perfect efficiency
-        return 1.0
-    elif num_steps <= max_acceptable_steps:
-        # Decreasing reward based on excess steps
-        efficiency_ratio = (max_acceptable_steps - num_steps) / (max_acceptable_steps - optimal_steps)
-        return max(0.1, efficiency_ratio)
-    else:
-        # Too many steps, minimal reward
-        return 0.1
-        
-# Additional reward components that can be combined
-def reward_code_quality(trajectory, **kwargs):
-    """Evaluate code quality in generated solutions."""
-    if not trajectory.final_code:
-        return 0.0
-        
-    quality_score = 0.0
-    
-    # Check for proper error handling
-    if 'try:' in trajectory.final_code and 'except:' in trajectory.final_code:
-        quality_score += 0.3
-    
-    # Check for documentation
-    if '"""' in trajectory.final_code or "'''" in trajectory.final_code:
-        quality_score += 0.2
-        
-    # Check for type hints
-    if '->' in trajectory.final_code or ': ' in trajectory.final_code:
-        quality_score += 0.2
-        
-    # Check for meaningful variable names
-    if not any(name in trajectory.final_code for name in ['x', 'y', 'temp', 'var']):
-        quality_score += 0.3
-    
-    return min(1.0, quality_score)
-
-def reward_tool_usage_correctness(trajectory, **kwargs):
-    """Evaluate correct usage of tools and APIs."""
-    if not trajectory.tool_calls:
-        return 0.5  # Neutral if no tools were needed
-    
-    correct_calls = 0
-    total_calls = len(trajectory.tool_calls)
-    
-    for call in trajectory.tool_calls:
-        # Check if tool was used appropriately
-        if call.success and call.parameters_valid:
-            correct_calls += 1
-    
-    return correct_calls / total_calls if total_calls > 0 else 0.0`}
-            </CodeBlock>
-
-            <div className="mt-6">
-              <h3 className="text-xl font-semibold text-blue-400 mb-3">Combining Multiple Reward Components</h3>
-              <p className="text-gray-300 mb-4">
-                You can combine multiple reward functions to create comprehensive evaluation criteria:
-              </p>
-              
-              <CodeBlock language="python">
-{`def create_composite_reward(weights=None):
-    """
-    Create a composite reward function from multiple components.
-    
-    Args:
-        weights: Dictionary mapping reward function names to weights
-    """
-    if weights is None:
-        weights = {
-            'efficiency': 0.4,
-            'code_quality': 0.3,
-            'tool_usage': 0.3
-        }
-    
-    def composite_reward(trajectory, **kwargs):
-        scores = {}
-        
-        # Calculate individual reward components
-        scores['efficiency'] = reward_step_efficiency(trajectory, **kwargs)
-        scores['code_quality'] = reward_code_quality(trajectory, **kwargs)
-        scores['tool_usage'] = reward_tool_usage_correctness(trajectory, **kwargs)
-        
-        # Weighted combination
-        total_score = sum(scores[key] * weights[key] for key in weights)
-        
-        # Log detailed breakdown for debugging
-        kwargs.setdefault('logging', {})['reward_breakdown'] = scores
-        
-        return total_score
-    
-    return composite_reward
-
-# Usage example
-reward_func = create_composite_reward(weights={
-    'efficiency': 0.5,      # Prioritize efficiency
-    'code_quality': 0.3,    # Good code practices
-    'tool_usage': 0.2       # Correct tool usage
-})`}
-              </CodeBlock>
-            </div>
-          </div>
-        </section>
-
-        {/* LLM-as-a-Judge */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">LLM-as-a-Judge via Ranking</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              For complex tasks where defining explicit rules is challenging, ToolBrain supports using large language models 
-              as judges. The key insight is that <strong>"ranking is better than scoring"</strong> - LLMs are more reliable 
-              at comparing solutions than assigning absolute scores.
-            </p>
-
-            <div className="bg-yellow-900/20 border border-yellow-600 rounded-lg p-4 mb-6">
-              <h3 className="text-xl font-semibold text-yellow-400 mb-3">🧠 Why Ranking &gt; Scoring?</h3>
-              <ul className="text-yellow-200 text-sm space-y-2">
-                <li>• <strong>Consistency:</strong> LLMs are more consistent when comparing A vs B than scoring A and B separately</li>
-                <li>• <strong>Calibration:</strong> Eliminates issues with score scale interpretation</li>
-                <li>• <strong>Reliability:</strong> Reduces variance in evaluation across different prompts</li>
-                <li>• <strong>Alignment:</strong> Better captures human preferences and nuanced quality judgments</li>
-              </ul>
-            </div>
-
-            <h3 className="text-xl font-semibold text-blue-400 mb-3">Simple API Usage</h3>
-            <p className="text-gray-300 mb-4">
-              Using LLM-as-a-judge is as simple as setting the reward function:
-            </p>
-            
-            <CodeBlock language="python">
-{`from toolbrain.rewards import reward_llm_judge_via_ranking
-
-# Initialize Brain with LLM-based reward
-brain = Brain(
-    agent=your_agent,
-    reward_func=reward_llm_judge_via_ranking,  # Simple one-liner!
-    learning_algorithm="GRPO"
-)
-
-# The LLM judge will automatically:
-# 1. Compare agent outputs pairwise
-# 2. Rank solutions based on quality
-# 3. Convert rankings to reward signals
-# 4. Provide detailed feedback for training`}
-            </CodeBlock>
-
-            <div className="mt-6">
-              <h3 className="text-xl font-semibold text-blue-400 mb-3">How LLM Ranking Works</h3>
-              <p className="text-gray-300 mb-4">
-                Behind the scenes, the LLM judge implements a sophisticated ranking process:
-              </p>
-              
-              <CodeBlock language="python">
-{`def reward_llm_judge_via_ranking(trajectory, **kwargs):
-    """
-    LLM-based reward using pairwise ranking approach.
-    
-    The judge compares the current trajectory against reference solutions
-    and provides relative ranking-based rewards.
-    """
-    
-    # 1. Collect comparison candidates
-    current_solution = trajectory.final_output
-    reference_solutions = kwargs.get('reference_solutions', [])
-    
-    # 2. Perform pairwise comparisons
-    ranking_prompt = f"""
-    Compare the following two solutions to the task:
-    
-    Task: {trajectory.task_description}
-    
-    Solution A: {current_solution}
-    Solution B: {{reference_solution}}
-    
-    Which solution is better? Consider:
-    - Correctness and accuracy
-    - Efficiency and elegance
-    - Clarity and readability
-    - Proper tool usage
-    
-    Respond with: "A is better", "B is better", or "Equal quality"
-    Provide a brief explanation.
-    """
-    
-    # 3. Calculate relative ranking score
-    wins = 0
-    total_comparisons = 0
-    
-    for ref_solution in reference_solutions:
-        comparison_result = llm_judge.compare(
-            prompt=ranking_prompt.format(reference_solution=ref_solution)
-        )
-        
-        if "A is better" in comparison_result:
-            wins += 1
-        elif "Equal quality" in comparison_result:
-            wins += 0.5
-        
-        total_comparisons += 1
-    
-    # 4. Convert ranking to reward signal
-    if total_comparisons == 0:
-        return 0.5  # Neutral if no comparisons
-    
-    ranking_score = wins / total_comparisons
-    return ranking_score`}
-              </CodeBlock>
-            </div>
-          </div>
-        </section>
-
-        {/* Custom Judge Configuration */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Custom Judge Configuration</h2>
-          <div className="bg-gray-800 rounded-lg p-6 mb-6">
-            <p className="text-gray-300 mb-4">
-              You can customize the LLM judge with specific criteria and evaluation prompts:
-            </p>
-            
-            <CodeBlock language="python">
-{`from toolbrain.rewards import create_custom_llm_judge
-
-# Create custom judge with specific criteria
-custom_judge = create_custom_llm_judge(
-    judge_model="GPT-4-Turbo",
-    evaluation_criteria=[
-        "Technical correctness",
-        "Code efficiency and elegance", 
-        "Proper error handling",
-        "Documentation quality",
-        "Security best practices"
-    ],
-    comparison_style="detailed",  # or "quick", "thorough"
-    temperature=0.1,  # Low temperature for consistent judgments
-    max_comparisons=5  # Number of reference solutions to compare against
-)
-
-# Use in Brain initialization
-brain = Brain(
-    agent=code_agent,
-    reward_func=custom_judge,
-    learning_algorithm="DPO"  # DPO works well with ranking-based rewards
-)
-
-# Alternative: Hybrid approach combining both methods
-def hybrid_reward(trajectory, **kwargs):
-    """Combine rule-based and LLM-based evaluation."""
-    
-    # Get rule-based score
-    rule_score = reward_step_efficiency(trajectory, **kwargs)
-    
-    # Get LLM-based score (only for high-stakes decisions)
-    if trajectory.complexity_score > 0.7:
-        llm_score = reward_llm_judge_via_ranking(trajectory, **kwargs)
-        # Weighted combination
-        return 0.3 * rule_score + 0.7 * llm_score
-    else:
-        # Use rule-based for simple cases
-        return rule_score
-
-brain = Brain(
-    agent=your_agent,
-    reward_func=hybrid_reward,
-    learning_algorithm="GRPO"
-)`}
-            </CodeBlock>
-
-            <div className="mt-6 p-4 bg-green-900/20 border border-green-600 rounded-lg">
-              <h4 className="font-semibold text-green-400 mb-2">🎯 Best Practices</h4>
-              <ul className="text-green-200 text-sm space-y-1">
-                <li>• Start with simple rule-based rewards for well-defined tasks</li>
-                <li>• Use LLM judges for subjective or complex evaluation criteria</li>
-                <li>• Combine multiple reward components for comprehensive evaluation</li>
-                <li>• Always validate reward functions with manual spot-checks</li>
-                <li>• Use ranking-based LLM evaluation for more reliable results</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* Real-World Examples */}
-        <section className="mb-12">
-          <h2 className="text-3xl font-semibold text-white mb-6">Real-World Examples</h2>
-          <div className="bg-gray-800 rounded-lg p-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-lg font-semibold text-blue-400 mb-3">Finance Agent Reward</h3>
-                <CodeBlock language="python">
-{`def finance_agent_reward(trajectory, **kwargs):
-    """Reward for financial analysis tasks."""
-    scores = {}
-    
-    # Data accuracy (rule-based)
-    scores['accuracy'] = check_calculation_accuracy(
-        trajectory.calculations
-    )
-    
-    # Risk assessment quality (LLM judge)
-    if trajectory.risk_analysis:
-        scores['risk_quality'] = reward_llm_judge_via_ranking(
-            trajectory, 
-            focus="risk assessment quality"
-        )
-    
-    # Compliance with regulations (rule-based)
-    scores['compliance'] = check_regulatory_compliance(
-        trajectory.recommendations
-    )
-    
-    return weighted_average(scores, {
-        'accuracy': 0.5,
-        'risk_quality': 0.3,
-        'compliance': 0.2
-    })`}
-                </CodeBlock>
-              </div>
-              
-              <div>
-                <h3 className="text-lg font-semibold text-purple-400 mb-3">Code Review Agent Reward</h3>
-                <CodeBlock language="python">
-{`def code_review_reward(trajectory, **kwargs):
-    """Reward for code review tasks."""
-    
-    # Combine multiple evaluation approaches
-    review_quality = reward_llm_judge_via_ranking(
-        trajectory,
-        evaluation_criteria=[
-            "Identifies security vulnerabilities",
-            "Suggests performance improvements", 
-            "Maintains code style consistency",
-            "Provides constructive feedback"
-        ]
-    )
-    
-    # Check for objective metrics
-    completeness = len(trajectory.identified_issues) / \
-                  len(kwargs['ground_truth_issues'])
-    
-    return 0.7 * review_quality + 0.3 * completeness`}
-                </CodeBlock>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* CALL TO ACTION */}
+        <div className="bg-gradient-to-r from-[#161B22] to-[#21262D] border border-[#30363D] rounded-xl p-12 text-center">
+          <h2 className="text-3xl font-bold text-[#E6EDF3] mb-6">
+            Ready to Design Your Perfect Reward System?
+          </h2>
+          <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+            Whether you need precise control or semantic understanding, ToolBrain's flexible reward system has you covered.
+          </p>
+          
+          <a 
+            href="/key-features"
+            className="inline-block bg-[#58A6FF] hover:bg-[#4A90E2] text-white px-10 py-4 rounded-lg text-lg font-semibold transition-colors duration-200 shadow-lg hover:shadow-xl"
+          >
+            Explore More Features
+          </a>
+        </div>
       </div>
     </Layout>
   );

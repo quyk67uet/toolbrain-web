@@ -17,7 +17,6 @@ const navigation: NavItem[] = [
     children: [
       { name: 'Introduction', href: '/get-started/introduction' },
       { name: 'Installation', href: '/get-started/installation' },
-      { name: 'Quickstart: Your First Trained Agent', href: '/get-started/quickstart' },
     ]
   },
   {
@@ -42,7 +41,7 @@ const navigation: NavItem[] = [
   {
     name: 'CONCEPTUAL GUIDES',
     children: [
-      { name: 'The &apos;Coach-Athlete&apos; Paradigm', href: '/conceptual-guides/coach-athlete-paradigm' },
+      { name: 'The "Coach-Athlete" Paradigm', href: '/conceptual-guides/coach-athlete-paradigm' },
       { name: 'The Execution Trace', href: '/conceptual-guides/execution-trace' },
     ]
   },
