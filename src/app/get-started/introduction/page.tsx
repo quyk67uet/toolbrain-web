@@ -42,7 +42,16 @@ from smolagents import CodeAgent, TransformersModel, tool
 
 @tool
 def multiply(a: int, b: int) -> int:
-    """Multiplies two integers."""
+    """
+    Multiply two integers.
+
+    Args:
+        a (int): First factor.
+        b (int): Second factor.
+
+    Returns:
+        int: Product of a and b.
+    """
     return a * b
 
 # Define a standard agent (CPU-compatible)
@@ -51,9 +60,9 @@ agent = CodeAgent(model=model, tools=[multiply], max_steps=1)
 
 # 2. Initialize the Brain with your agent and a built-in reward
 brain = Brain(
-    agent=agent,
+    agent,
     reward_func=reward_exact_match,
-    learning_algorithm="GRPO"
+    algorithm="GRPO"
 )
 
 # 3. Define a task and start training!
